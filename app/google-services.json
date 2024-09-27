@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "638592161794",
+    "project_id": "fluxbiz-data",
+    "storage_bucket": "fluxbiz-data.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638592161794:android:78cd77991371b8cc9c2f1b",
+        "android_client_info": {
+          "package_name": "com.kelyandev.fluxbiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDC82_oQElYfx1JKxeUiEpAa0rBnnFcU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
