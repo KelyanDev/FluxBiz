@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FluxBiz</string>
+    <string name="se_connecter">Se connecter</string>
+    <string name="pas_encore_de_compte_s_inscrire">Pas encore de compte ? S\'inscrire</string>
+    <string name="email">Email</string>
+    <string name="mot_de_passe">Mot de passe</string>
+    <string name="d_j_inscrit_se_connecter">Déjà inscrit ? Se connecter</string>
+    <string name="s_inscrire">S\'inscrire</string>
 </resources>

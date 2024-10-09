@@ -1,6 +1,7 @@
-package com.kelyandev.fluxbiz;
+package com.kelyandev.fluxbiz.Auth;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,21 +9,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import android.view.View;
-import android.widget.Button;
+import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
 
-import com.kelyandev.fluxbiz.Auth.LoginActivity;
+public class LoginActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity {
-
-    private Button buttonLogin;
+    private TextView viewRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -30,14 +28,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        buttonLogin = findViewById(R.id.buttonLogin);
+        viewRegister = findViewById(R.id.textViewRegister);
 
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
+        viewRegister.setOnClickListener( view -> {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
     }
 }
