@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/block_border"
+    android:padding="16dp">
+
+    <!-- Image de profil -->
+
+    <!-- Nom d'utilisateur -->
+
+    <!-- Zone des boutons d'interaction -->
+
+    <ImageView
+        android:id="@+id/imageViewProfile"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="Photo de profil"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.152"
+        app:srcCompat="@drawable/user_default" />
+
+    <TextView
+        android:id="@+id/textViewUsername"
+        android:layout_width="307dp"
+        android:layout_height="18dp"
+        android:text="Nom Utilisateur"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/interaction_buttons"
+        android:layout_width="215dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="32dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.384"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewUsername">
+
+        <!-- Bouton Like -->
+        <ImageButton
+            android:id="@+id/buttonLike"
+            android:layout_width="36dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Like"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/like_button" />
+
+        <TextView
+            android:id="@+id/like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="0"
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
+            android:id="@+id/buttonComment"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Commenter"
+            android:padding="2dp" />
+
+        <ImageButton
+            android:id="@+id/buttonShare"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Partager"
+            android:padding="2dp" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
