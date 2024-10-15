@@ -13,9 +13,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -23,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerButton;
     private TextView viewLogin;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.buttonRegister);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         viewLogin.setOnClickListener( view -> {
             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
@@ -71,11 +79,25 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(RegisterActivity.this, "Votre compte a bien été créé", Toast.LENGTH_SHORT).show();
-                finish();
+                FirebaseUser user = mAuth.getCurrentUser();
+                saveUsernameToFirestore(user.getUid(), username);
             } else {
                 Toast.makeText(RegisterActivity.this, "Erreur lors de la création du compte :" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+
+    private void saveUsernameToFirestore(String userId, String username) {
+        DocumentReference userRef = db.collection("users").document(userId);
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("username",username);
+
+        userRef.set(userMap).addOnSuccessListener(aVoid -> {
+            Toast.makeText(RegisterActivity.this, "Votre compte a bien été créé", Toast.LENGTH_SHORT).show();
+            finish();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(RegisterActivity.this, "Erreur lors de l'inscription", Toast.LENGTH_SHORT).show();
         });
     }
 }

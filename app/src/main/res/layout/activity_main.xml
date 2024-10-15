@@ -81,5 +81,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:title="" />
 
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="57dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/home_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/navbar"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewBiz"
+        app:srcCompat="@drawable/home_logo_selected" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

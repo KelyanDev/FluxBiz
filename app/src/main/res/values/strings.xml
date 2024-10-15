@@ -10,4 +10,9 @@
     <string name="logo">Logo</string>
     <string name="register_title">S\'inscrire sur FluxBiz</string>
     <string name="Login_title">Se connecter à FluxBiz</string>
+    <string name="home_button">Home button</string>
+    <string name="cancel">Annuler</string>
+    <string name="user_logo">User logo</string>
+    <string name="biz">Biz</string>
+    <string name="biz_hint">Qu\'est ce qui se passe ?</string>
 </resources>
