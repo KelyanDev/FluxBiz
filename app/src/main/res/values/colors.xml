@@ -9,4 +9,6 @@
     <color name="my_dark_primary_variant">#3700B3</color>
     <color name="my_dark_on_primary">#1B1B1F</color>
     <color name="my_dark_border">#AAB8C2</color>
+
+    <color name="colorButtonDisabled">#FAAE7B</color>
 </resources>

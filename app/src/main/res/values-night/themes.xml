@@ -1,12 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.FluxBiz" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
+
         <item name="colorPrimary">@color/my_dark_primary</item>
         <item name="colorPrimaryVariant">@color/my_dark_primary_variant</item>
         <item name="colorOnPrimary">@color/my_dark_on_primary</item>
         <item name="colorOutline">@color/my_dark_border</item>
-        <item name="likeIconDrawable">@drawable/ic_dark_not_liked</item>
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
     </style>
 </resources>

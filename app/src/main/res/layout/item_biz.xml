@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/block_border"
-    android:padding="16dp">
+    android:padding="6dp">
 
     <ImageView
         android:id="@+id/imageViewProfile"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:contentDescription="Photo de profil"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
+        android:contentDescription="@string/profile_picture"
         android:scaleType="centerCrop"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,36 +22,40 @@
 
     <TextView
         android:id="@+id/textViewBizUsername"
-        android:layout_width="307dp"
-        android:layout_height="18dp"
-        android:text="Nom Utilisateur"
+        android:layout_width="0dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/username"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:gravity="top|start"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.393"
+        app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/interaction_buttons"
-        android:layout_width="215dp"
-        android:layout_height="23dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="30dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:padding="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.384"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername">
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewBizContent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername"
+        app:layout_constraintVertical_bias="0.0">
 
-        <!-- Bouton Like -->
         <ImageButton
             android:id="@+id/buttonLike"
-            android:layout_width="36dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="0dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Like"
-            android:padding="2dp"
+            android:contentDescription="@string/like"
             android:scaleType="fitCenter"
             android:src="@drawable/like_button" />
 
@@ -58,18 +63,18 @@
             android:id="@+id/like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:gravity="center_horizontal"
             android:text="0"
             android:textSize="12sp"
             tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/buttonComment"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Commenter"
+            android:contentDescription="@string/comment"
             android:padding="2dp" />
 
         <ImageButton
@@ -78,21 +83,23 @@
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Partager"
+            android:contentDescription="@string/share"
             android:padding="2dp" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/textViewBizContent"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Description"
+        android:scrollHorizontally="false"
+        android:singleLine="false"
+        android:text="@string/content"
         app:layout_constraintBottom_toTopOf="@+id/interaction_buttons"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
         app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername"
-        app:layout_constraintVertical_bias="0.692" />
+        app:layout_constraintVertical_bias="0.333" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

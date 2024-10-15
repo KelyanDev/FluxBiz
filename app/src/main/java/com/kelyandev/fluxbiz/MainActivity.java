@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
+import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,8 +48,11 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        bizList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerViewBiz);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        bizList = new ArrayList<>();
+
         bizAdapter = new BizAdapter(bizList);
         recyclerView.setAdapter(bizAdapter);
 
@@ -66,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
                         bizList.clear();
                         bizList.addAll(queryDocumentSnapshots.toObjects(Biz.class));
                         bizAdapter.notifyDataSetChanged();
+                        Log.d("Firestore data", "Document fetched " + bizList.size());
+                    } else {
+                        Log.d("Firestore Data", "No Documents found");
                     }
                 });
 

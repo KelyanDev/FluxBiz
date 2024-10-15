@@ -3,6 +3,7 @@ package com.kelyandev.fluxbiz.Adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,14 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull BizViewHolder holder, int position) {
         Biz biz = bizList.get(position);
+
+        holder.buttonLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isLiked = !holder.buttonLike.isSelected();
+                holder.buttonLike.setSelected(isLiked);
+            }
+        });
         holder.contentTextView.setText(biz.getContent());
         holder.usernameTextView.setText(biz.getUsername());
         holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
@@ -43,9 +52,11 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
 
     static class BizViewHolder extends RecyclerView.ViewHolder {
         TextView contentTextView, usernameTextView, likeCountTextView;
+        public ImageButton buttonLike;
 
         public BizViewHolder(@NonNull View itemview) {
             super(itemview);
+            buttonLike = itemview.findViewById(R.id.buttonLike);
             contentTextView = itemview.findViewById(R.id.textViewBizContent);
             usernameTextView = itemview.findViewById(R.id.textViewBizUsername);
             likeCountTextView = itemview.findViewById(R.id.like_count);

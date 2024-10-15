@@ -15,4 +15,9 @@
     <string name="user_logo">User logo</string>
     <string name="biz">Biz</string>
     <string name="biz_hint">Qu\'est ce qui se passe ?</string>
+    <string name="comment">Commenter</string>
+    <string name="share">Partager</string>
+    <string name="content">Description</string>
+    <string name="profile_picture">Photo de profil</string>
+    <string name="like">Like</string>
 </resources>

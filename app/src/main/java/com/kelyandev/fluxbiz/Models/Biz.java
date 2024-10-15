@@ -4,16 +4,18 @@ public class Biz {
     private String content;
     private long time;
     private String username;
-    private int likes;
+    private int likeCount;
+    private String userId;
 
     public Biz() {
     }
 
-    public Biz(String content, long time, String username, int likes) {
+    public Biz(String content, long time, String username, int likeCount, String userId) {
         this.content = content;
         this.time = time;
         this.username = username;
-        this.likes = likes;
+        this.likeCount = likeCount;
+        this.userId = userId;
     }
 
     public String getContent() {
@@ -41,12 +43,18 @@ public class Biz {
     }
 
     public int getLikes() {
-        return likes;
+        return likeCount;
     }
 
-    public void setLikes(int likes) {
-        this.likes = likes;
+    public void setLikes(int likeCount) {
+        this.likeCount = likeCount;
     }
 
+    private String getUserId() {
+        return userId;
+    }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }
