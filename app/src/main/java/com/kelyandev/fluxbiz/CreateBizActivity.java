@@ -1,6 +1,5 @@
 package com.kelyandev.fluxbiz;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +15,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.kelyandev.fluxbiz.Auth.LoginActivity;
-import com.kelyandev.fluxbiz.Auth.RegisterActivity;
 
 import java.util.HashMap;
 import java.util.Map;

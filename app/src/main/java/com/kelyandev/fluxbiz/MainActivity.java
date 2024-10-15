@@ -10,21 +10,30 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.kelyandev.fluxbiz.Adapters.BizAdapter;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
 import com.kelyandev.fluxbiz.Auth.RegisterActivity;
+import com.kelyandev.fluxbiz.Models.Biz;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private BizAdapter bizAdapter;
+    private List<Biz> bizList;
     private Button button;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +47,35 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        bizList = new ArrayList<>();
+        recyclerView = findViewById(R.id.recyclerViewBiz);
+        bizAdapter = new BizAdapter(bizList);
+        recyclerView.setAdapter(bizAdapter);
+
+        db = FirebaseFirestore.getInstance();
+
+        db.collection("bizs")
+                .orderBy("time", Query.Direction.DESCENDING)
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.w("Firestore Error", "Listen failed", e);
+                        return;
+                    }
+
+                    if (queryDocumentSnapshots != null) {
+                        bizList.clear();
+                        bizList.addAll(queryDocumentSnapshots.toObjects(Biz.class));
+                        bizAdapter.notifyDataSetChanged();
+                    }
+                });
+
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         button = findViewById(R.id.buttonLog);
 
         button.setOnClickListener( view -> {
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            startActivity(new Intent(MainActivity.this, CreateBizActivity.class));
         });
 
         if (currentUser == null) {

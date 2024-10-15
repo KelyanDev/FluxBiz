@@ -7,12 +7,6 @@
     android:background="@drawable/block_border"
     android:padding="16dp">
 
-    <!-- Image de profil -->
-
-    <!-- Nom d'utilisateur -->
-
-    <!-- Zone des boutons d'interaction -->
-
     <ImageView
         android:id="@+id/imageViewProfile"
         android:layout_width="48dp"
@@ -26,7 +20,7 @@
         app:srcCompat="@drawable/user_default" />
 
     <TextView
-        android:id="@+id/textViewUsername"
+        android:id="@+id/textViewBizUsername"
         android:layout_width="307dp"
         android:layout_height="18dp"
         android:text="Nom Utilisateur"
@@ -47,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.384"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewUsername">
+        app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername">
 
         <!-- Bouton Like -->
         <ImageButton
@@ -88,4 +82,17 @@
             android:padding="2dp" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewBizContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        app:layout_constraintBottom_toTopOf="@+id/interaction_buttons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername"
+        app:layout_constraintVertical_bias="0.692" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

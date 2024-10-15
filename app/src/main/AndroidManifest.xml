@@ -30,6 +30,11 @@
             android:label="Register">
 
         </activity>
+        <activity
+            android:name=".CreateBizActivity"
+            android:label="Create Biz">
+
+        </activity>
     </application>
 
 </manifest>
