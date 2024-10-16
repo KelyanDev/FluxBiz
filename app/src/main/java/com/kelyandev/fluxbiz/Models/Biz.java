@@ -1,6 +1,10 @@
 package com.kelyandev.fluxbiz.Models;
 
+import java.sql.Time;
+import java.util.concurrent.TimeUnit;
+
 public class Biz {
+    private String id;
     private String content;
     private long time;
     private String username;
@@ -10,12 +14,21 @@ public class Biz {
     public Biz() {
     }
 
-    public Biz(String content, long time, String username, int likeCount, String userId) {
+    public Biz(String id, String content, long time, String username, int likeCount, String userId) {
+        this.id = id;
         this.content = content;
         this.time = time;
         this.username = username;
         this.likeCount = likeCount;
         this.userId = userId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -56,5 +69,43 @@ public class Biz {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void incrementLikes() {
+        likeCount++;
+    }
+
+    public void decrementLikes() {
+        likeCount--;
+    }
+
+    public double calculateScore() {
+        long currentTime = System.currentTimeMillis();
+        long ageInMillis = currentTime - time;
+        long ageInDays = TimeUnit.DAYS.convert(ageInMillis, TimeUnit.MILLISECONDS);
+
+        double alpha = (double) likeCount;
+
+        return (30 - ageInDays) * alpha;
+    }
+
+    public String getFormattedDate() {
+        long currentTime = System.currentTimeMillis();
+        long ageInMillis = currentTime - time;
+
+        long ageInSec = TimeUnit.MILLISECONDS.toSeconds(ageInMillis);
+        long ageInMinutes = TimeUnit.MILLISECONDS.toMinutes(ageInMillis);
+        long ageInHours = TimeUnit.MILLISECONDS.toHours(ageInMillis);
+        long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMillis);
+
+        if (ageInSec < 60) {
+            return ageInSec + "sec";
+        } else if (ageInMinutes < 60) {
+            return ageInMinutes + "min";
+        } else if (ageInHours < 24) {
+            return ageInHours + "h";
+        } else {
+            return ageInDays + "d";
+        }
     }
 }

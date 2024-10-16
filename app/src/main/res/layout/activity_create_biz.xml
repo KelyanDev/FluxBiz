@@ -31,9 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/button_background"
         android:text="@string/biz"
-        android:enabled="false"
         app:layout_constraintBottom_toTopOf="@+id/editTextBizContent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -42,6 +40,7 @@
         android:layout_width="67dp"
         android:layout_height="34dp"
         android:gravity="center"
+        android:layout_marginStart="10dp"
         android:text="@string/cancel"
         android:textColor="@color/my_light_primary"
         app:layout_constraintBottom_toTopOf="@+id/imageView4"
@@ -53,6 +52,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="60dp"
+        android:layout_marginStart="10dp"
         android:contentDescription="@string/user_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

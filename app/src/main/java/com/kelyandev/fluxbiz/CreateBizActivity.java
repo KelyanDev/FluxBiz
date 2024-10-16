@@ -1,6 +1,9 @@
 package com.kelyandev.fluxbiz;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,6 +17,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -46,6 +51,28 @@ public class CreateBizActivity extends AppCompatActivity {
         bizContent = findViewById(R.id.editTextBizContent);
         buttonSend = findViewById(R.id.buttonSendBiz);
         cancel = findViewById(R.id.textViewCancel);
+
+        buttonSend.setEnabled(false);
+
+        bizContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.toString().trim().isEmpty()) {
+                    buttonSend.setEnabled(false);
+                } else {
+                    buttonSend.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         cancel.setOnClickListener( view -> {
             finish();
@@ -87,13 +114,24 @@ public class CreateBizActivity extends AppCompatActivity {
             biz.put("time",System.currentTimeMillis());
             biz.put("username", currentUsername);
             biz.put("userId", currentUser.getUid());
-            biz.put("likeCount", 0);
 
             db.collection("bizs")
                     .add(biz)
                     .addOnSuccessListener(documentReference -> {
-                        Toast.makeText(CreateBizActivity.this,"Biz envoyé", Toast.LENGTH_SHORT).show();
-                        finish();
+                        String bizId = documentReference.getId();
+
+                        DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/").getReference("likesRef").child(bizId);
+
+                        Map<String, Object> likeData = new HashMap<>();
+                        likeData.put("likeCount", 0);
+                        likeData.put("userRef", new HashMap<String, Boolean>());
+
+                        likesRef.setValue(likeData).addOnSuccessListener(aVoid -> {
+                            Toast.makeText(CreateBizActivity.this,"Biz envoyé", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(CreateBizActivity.this,"Erreur lors de l'envoi", Toast.LENGTH_SHORT).show();
+                        });
                     }).addOnFailureListener(e -> {
                         Toast.makeText(CreateBizActivity.this,"Erreur lors de l'envoi", Toast.LENGTH_SHORT).show();
                     });

@@ -7,32 +7,53 @@
     android:background="@drawable/block_border"
     android:padding="6dp">
 
+    <LinearLayout
+        android:id="@+id/bizTitle"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="0dp"
+        tools:layout_editor_absoluteX="232dp"
+        tools:layout_editor_absoluteY="59dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.393"
+        app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewBizUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:gravity="top|start"
+            android:text="@string/username"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textViewBizTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|bottom"
+            android:text="Date"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/imageViewProfile"
         android:layout_width="66dp"
         android:layout_height="66dp"
         android:contentDescription="@string/profile_picture"
-        android:scaleType="centerCrop"
         android:padding="10dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.152"
+        app:layout_constraintVertical_bias="0.166"
         app:srcCompat="@drawable/user_default" />
-
-    <TextView
-        android:id="@+id/textViewBizUsername"
-        android:layout_width="0dp"
-        android:layout_height="19dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/username"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:gravity="top|start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.393"
-        app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/interaction_buttons"
@@ -46,16 +67,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textViewBizContent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername"
+        app:layout_constraintTop_toBottomOf="@+id/bizTitle"
         app:layout_constraintVertical_bias="0.0">
 
         <ImageButton
             android:id="@+id/buttonLike"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:padding="0dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/like"
+            android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/like_button" />
 
@@ -99,7 +120,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername"
+        app:layout_constraintTop_toBottomOf="@+id/bizTitle"
         app:layout_constraintVertical_bias="0.333" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
