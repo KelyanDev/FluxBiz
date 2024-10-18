@@ -6,17 +6,19 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
 import android.widget.ImageButton;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,8 +34,6 @@ import com.kelyandev.fluxbiz.Auth.LoginActivity;
 import com.kelyandev.fluxbiz.Models.Biz;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Biz> bizList;
     private Button button;
     private FirebaseFirestore db;
+    private DrawerLayout drawerLayout;
+    private ImageButton navButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Recycler View
         recyclerView = findViewById(R.id.recyclerViewBiz);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         bizAdapter = new BizAdapter(bizList);
         recyclerView.setAdapter(bizAdapter);
 
+        // Database connexion
         db = FirebaseFirestore.getInstance();
 
         db.collection("bizs")
@@ -76,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
 
                     if (queryDocumentSnapshots != null) {
                         bizList.clear();
+
+                        int[] loadedCount = {0};
+
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             String id = document.getId();
                             String content = document.getString("content");
@@ -97,6 +104,20 @@ public class MainActivity extends AppCompatActivity {
                                         biz.setLikes(likeCount);
                                         bizAdapter.notifyDataSetChanged();
                                     }
+
+                                    loadedCount[0]++;
+
+                                    if (loadedCount[0] == queryDocumentSnapshots.size()) {
+                                        bizList.sort((b1, b2) -> {
+                                            Log.w("Sorting process", "Score 1: " + b1.calculateScore() + " - Score 2: " + b2.calculateScore());
+                                            return Double.compare(b2.calculateScore(), b1.calculateScore());
+                                        });
+
+                                        bizAdapter.notifyDataSetChanged();
+                                        Log.w("Sorting process", "Biz list sorted correctly");
+                                    }
+
+
                                 }
 
                                 @Override
@@ -106,34 +127,52 @@ public class MainActivity extends AppCompatActivity {
                             });
                         }
 
-                        Collections.sort(bizList, new Comparator<Biz>() {
-                            @Override
-                            public int compare(Biz b1, Biz b2) {
-                                return Double.compare(b2.calculateScore(), b1.calculateScore());
-                            }
-                        });
-
-                        bizAdapter.notifyDataSetChanged();
                         Log.d("Firestore data", "Document fetched " + bizList.size());
                     } else {
                         Log.d("Firestore Data", "No Documents found");
                     }
                 });
 
+        // Database Auth
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
+        if (currentUser == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        // Create Biz Button
         button = findViewById(R.id.buttonLog);
 
         button.setOnClickListener( view -> {
             startActivity(new Intent(MainActivity.this, CreateBizActivity.class));
         });
 
-        if (currentUser == null) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+        // Nav bar
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navButton = findViewById(R.id.navbarButton);
+
+        navButton.setOnClickListener(v -> {
+            if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            } else {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    break;
+                case R.id.nav_profile:
+                    break;
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
+
     }
 }

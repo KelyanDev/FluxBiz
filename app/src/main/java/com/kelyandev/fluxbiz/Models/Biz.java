@@ -1,5 +1,7 @@
 package com.kelyandev.fluxbiz.Models;
 
+import android.util.Log;
+
 import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
@@ -82,7 +84,7 @@ public class Biz {
     public double calculateScore() {
         long currentTime = System.currentTimeMillis();
         long ageInMillis = currentTime - time;
-        long ageInDays = TimeUnit.DAYS.convert(ageInMillis, TimeUnit.MILLISECONDS);
+        long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMillis);
 
         double alpha = (double) likeCount;
 
