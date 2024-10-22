@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/profile_options">
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/user_default"
-            android:title="Profil" />
+            android:icon="@drawable/ic_person"
+            android:title="@string/nav_profile_text" />
     </group>
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/settings_and_help">
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_liked"
-            android:title="Paramètres" />
+            android:title="@string/nav_settings_text" />
+        <item
+            android:id="@+id/nav_help"
+            android:title="@string/nav_help_text" />
     </group>
 </menu>

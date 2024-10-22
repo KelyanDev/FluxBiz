@@ -9,6 +9,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
+import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
 
 public class MySettingsFragment extends PreferenceFragmentCompat {

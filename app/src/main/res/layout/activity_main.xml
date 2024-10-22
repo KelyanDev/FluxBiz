@@ -72,13 +72,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonLog"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="436dp"
             android:background="@drawable/rounded_button"
-            android:text="!"
+            android:src="@drawable/ic_create"
+            android:gravity="center"
             app:layout_constraintBottom_toTopOf="@+id/navbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.954"
@@ -116,6 +117,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
+        app:itemTextAppearance="@style/CustomDrawerTextStyle"
         app:menu="@menu/drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

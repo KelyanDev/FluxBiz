@@ -44,10 +44,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private BizAdapter bizAdapter;
     private List<Biz> bizList;
-    private Button button;
     private FirebaseFirestore db;
     private DrawerLayout drawerLayout;
-    private ImageButton navButton;
+    private ImageButton button, navButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

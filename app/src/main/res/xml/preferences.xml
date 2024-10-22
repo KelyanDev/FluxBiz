@@ -3,13 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="Paramètres de l'application">
+        android:title="Paramètres">
+
+        <Preference
+            app:key="account"
+            app:title="Mon compte"
+            app:summary="Changer les différentes informations liées à votre profil"/>
+        <Preference
+            app:key="security"
+            app:title="Sécurité"
+            app:summary="Gérer les paramètres de sécurité, changer votre mot de passe"/>
+        <Preference
+            app:key="notifications"
+            app:title="Notifications"
+            app:summary="Gérer les paramètres liées aux notifications de l'application"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Déconnexion">
 
         <Preference
             app:key="logout"
             app:title="Se déconnecter"
             android:layout="@layout/logout_button"/>
-
-
     </PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>

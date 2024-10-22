@@ -20,4 +20,7 @@
     <string name="content">Description</string>
     <string name="profile_picture">Photo de profil</string>
     <string name="like">Like</string>
+    <string name="nav_help_text">Aide et Support</string>
+    <string name="nav_settings_text">Paramètres</string>
+    <string name="nav_profile_text">Profil</string>
 </resources>
