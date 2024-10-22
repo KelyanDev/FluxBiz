@@ -87,17 +87,7 @@ public class CreateBizActivity extends AppCompatActivity {
         FirebaseUser currentUser = auth.getCurrentUser();
 
         if (currentUser != null) {
-            String userId = currentUser.getUid();
-
-            db.collection("users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    currentUsername = documentSnapshot.getString("username");
-                } else {
-                    Toast.makeText(CreateBizActivity.this, "Nom d'utilisateur introuvable", Toast.LENGTH_SHORT).show();
-                }
-            }).addOnFailureListener(e -> {
-                Toast.makeText(CreateBizActivity.this,"Erreur lors de la récupération de votre nom d'utilisateur", Toast.LENGTH_SHORT).show();
-            });
+            currentUsername = currentUser.getDisplayName();
         } else {
             Toast.makeText(CreateBizActivity.this,"Vous n'êtes pas connecté", Toast.LENGTH_SHORT).show();
         }

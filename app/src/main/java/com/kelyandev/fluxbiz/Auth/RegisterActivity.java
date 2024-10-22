@@ -14,8 +14,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
 import android.widget.Toast;
@@ -80,24 +82,25 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
-                saveUsernameToFirestore(user.getUid(), username);
+
+                if (user != null) {
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(username)
+                            .build();
+
+                    user.updateProfile(profileUpdates).addOnCompleteListener(profileTask -> {
+                        if (profileTask.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "Votre compte a bien été créer", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Erreur lors de la création du compte :" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             } else {
                 Toast.makeText(RegisterActivity.this, "Erreur lors de la création du compte :" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
-    }
-
-    private void saveUsernameToFirestore(String userId, String username) {
-        DocumentReference userRef = db.collection("users").document(userId);
-
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("username",username);
-
-        userRef.set(userMap).addOnSuccessListener(aVoid -> {
-            Toast.makeText(RegisterActivity.this, "Votre compte a bien été créé", Toast.LENGTH_SHORT).show();
-            finish();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(RegisterActivity.this, "Erreur lors de l'inscription", Toast.LENGTH_SHORT).show();
         });
     }
 }

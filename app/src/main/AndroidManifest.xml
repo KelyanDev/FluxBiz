@@ -35,6 +35,9 @@
             android:label="Create Biz">
 
         </activity>
+        <activity android:name=".Settings.SettingsActivity"
+            android:label="Settings">
+        </activity>
     </application>
 
 </manifest>

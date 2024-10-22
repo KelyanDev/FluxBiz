@@ -12,6 +12,7 @@ firebase-auth = "23.0.0"
 firebase-database = "21.0.0"
 firebase-firestore = "25.1.0"
 firebase-messaging = "24.0.2"
+preference = "1.2.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -29,6 +30,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebase-firestore" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebase-messaging" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
+preference = { module = "androidx.preference:preference", version.ref = "preference" }
 
 
 [plugins]

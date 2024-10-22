@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Paramètres de l'application">
+
+        <Preference
+            app:key="logout"
+            app:title="Se déconnecter"
+            android:layout="@layout/logout_button"/>
+
+
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

@@ -14,9 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +34,7 @@ import com.google.firebase.firestore.Query;
 import com.kelyandev.fluxbiz.Adapters.BizAdapter;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
 import com.kelyandev.fluxbiz.Models.Biz;
+import com.kelyandev.fluxbiz.Settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            String username = currentUser.getDisplayName();
         }
 
         // Create Biz Button
@@ -163,12 +168,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = headerView.findViewById(R.id.user_name);
+
+        if (currentUser != null) {
+            String displayName = currentUser.getDisplayName();
+            if (displayName != null) {
+                navUsername.setText(displayName);
+            } else {
+                navUsername.setText("");
+            }
+        }
+
+
         navigationView.setNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.nav_home:
-                    break;
-                case R.id.nav_profile:
-                    break;
+            if (item.getItemId() == R.id.nav_settings) {
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;

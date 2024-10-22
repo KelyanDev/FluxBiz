@@ -40,6 +40,7 @@ dependencies {
     implementation (libs.firebase.database)
     implementation (libs.firebase.firestore)
     implementation (libs.firebase.messaging)
+    implementation (libs.preference)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
