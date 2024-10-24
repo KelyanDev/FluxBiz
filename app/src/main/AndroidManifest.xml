@@ -38,6 +38,9 @@
         <activity android:name=".Settings.SettingsActivity"
             android:label="Settings">
         </activity>
+        <activity android:name=".ProfilActivity"
+            android:label="Profile">
+        </activity>
     </application>
 
 </manifest>

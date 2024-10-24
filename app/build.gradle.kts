@@ -41,6 +41,7 @@ dependencies {
     implementation (libs.firebase.firestore)
     implementation (libs.firebase.messaging)
     implementation (libs.preference)
+    implementation(libs.swiperefreshlayout)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

@@ -12,10 +12,11 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
 import android.content.Intent;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swiperefreshlayout;
     private BizAdapter bizAdapter;
     private List<Biz> bizList;
     private FirebaseFirestore db;
@@ -64,6 +66,25 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewBiz);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        swiperefreshlayout = findViewById(R.id.swipeRefreshLayout);
+        swiperefreshlayout.setColorSchemeColors(
+                getResources().getColor(R.color.my_light_primary)
+        );
+
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(com.google.android.material.R.attr.colorOnPrimary, typedValue, true);
+
+        int colorOnPrimary = typedValue.data;
+
+        swiperefreshlayout.setProgressBackgroundColorSchemeColor(colorOnPrimary);
+
+        // Swipe Refresh Layout
+        swiperefreshlayout.setOnRefreshListener(() -> {
+            refreshRecyclerViewData();
+
+            swiperefreshlayout.setRefreshing(false);
+        });
+
         bizList = new ArrayList<>();
 
         bizAdapter = new BizAdapter(bizList);
@@ -72,6 +93,73 @@ public class MainActivity extends AppCompatActivity {
         // Database connexion
         db = FirebaseFirestore.getInstance();
 
+        loadDataFromFirestore();
+
+        // Database Auth
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            String username = currentUser.getDisplayName();
+        }
+
+        // Create Biz Button
+        button = findViewById(R.id.buttonLog);
+
+        button.setOnClickListener( view -> {
+            startActivity(new Intent(MainActivity.this, CreateBizActivity.class));
+        });
+
+        // Nav bar
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navButton = findViewById(R.id.navbarButton);
+
+        navButton.setOnClickListener(v -> {
+            if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            } else {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = headerView.findViewById(R.id.user_name);
+
+        if (currentUser != null) {
+            String displayName = currentUser.getDisplayName();
+            if (displayName != null) {
+                navUsername.setText(displayName);
+            } else {
+                navUsername.setText("");
+            }
+        }
+
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_settings) {
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+            } else if (item.getItemId() == R.id.nav_profile) {
+                Intent profileIntent = new Intent (MainActivity.this, ProfilActivity.class);
+                startActivity(profileIntent);
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
+
+    }
+
+    private void refreshRecyclerViewData() {
+        loadDataFromFirestore();
+        swiperefreshlayout.setRefreshing(false);
+    }
+
+    private void loadDataFromFirestore() {
         db.collection("bizs")
                 .orderBy("time", Query.Direction.DESCENDING)
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
@@ -134,60 +222,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Firestore Data", "No Documents found");
                     }
                 });
-
-        // Database Auth
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            String username = currentUser.getDisplayName();
-        }
-
-        // Create Biz Button
-        button = findViewById(R.id.buttonLog);
-
-        button.setOnClickListener( view -> {
-            startActivity(new Intent(MainActivity.this, CreateBizActivity.class));
-        });
-
-        // Nav bar
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navButton = findViewById(R.id.navbarButton);
-
-        navButton.setOnClickListener(v -> {
-            if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            } else {
-                drawerLayout.closeDrawer(GravityCompat.START);
-            }
-        });
-
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View headerView = navigationView.getHeaderView(0);
-        TextView navUsername = headerView.findViewById(R.id.user_name);
-
-        if (currentUser != null) {
-            String displayName = currentUser.getDisplayName();
-            if (displayName != null) {
-                navUsername.setText(displayName);
-            } else {
-                navUsername.setText("");
-            }
-        }
-
-
-        navigationView.setNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_settings) {
-                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
-            }
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        });
-
     }
+
 }
