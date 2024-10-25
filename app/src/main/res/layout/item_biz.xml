@@ -116,4 +116,16 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername"
         app:layout_constraintVertical_bias="0.333" />
 
+    <ImageButton
+        android:id="@+id/imageButtonOptions"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:contentDescription="More options"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintBottom_toTopOf="@+id/textViewBizContent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_moreoptions"
+        tools:ignore="HardcodedText"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

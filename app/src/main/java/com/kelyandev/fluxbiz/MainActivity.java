@@ -85,19 +85,19 @@ public class MainActivity extends AppCompatActivity {
             swiperefreshlayout.setRefreshing(false);
         });
 
+        // Database Auth
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
         bizList = new ArrayList<>();
 
-        bizAdapter = new BizAdapter(bizList);
+        bizAdapter = new BizAdapter(bizList, currentUser.getUid());
         recyclerView.setAdapter(bizAdapter);
 
         // Database connexion
         db = FirebaseFirestore.getInstance();
 
         loadDataFromFirestore();
-
-        // Database Auth
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);

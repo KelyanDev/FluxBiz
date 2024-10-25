@@ -1,18 +1,42 @@
 package com.kelyandev.fluxbiz;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.kelyandev.fluxbiz.Adapters.BizAdapter;
+import com.kelyandev.fluxbiz.Models.Biz;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfilActivity extends AppCompatActivity {
 
+    private RecyclerView recyclerView;
+    private BizAdapter bizAdapter;
+    private List<Biz> bizList;
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,5 +49,107 @@ public class ProfilActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Recycler View
+        recyclerView = findViewById(R.id.recyclerViewBizs);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        bizList = new ArrayList<>();
+
+        // Firebase Instances
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+
+        bizAdapter = new BizAdapter(bizList, currentUser.getUid());
+        recyclerView.setAdapter(bizAdapter);
+
+        loadUserDataFromFirestore();
+
+        // Username
+        TextView profileUsername = findViewById(R.id.textViewUsername);
+
+        String displayName = currentUser.getDisplayName();
+        if (displayName != null) {
+            profileUsername.setText(displayName);
+        } else {
+            profileUsername.setText("");
+        }
+
+        // Back Arrow
+        ImageButton backButton = findViewById(R.id.imageButtonBack);
+        backButton.setOnClickListener(view -> {
+            finish();
+        });
+
+    }
+
+    private void loadUserDataFromFirestore() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String userId = currentUser.getUid();
+
+        db.collection("bizs")
+                .whereEqualTo("userId", userId)
+                .orderBy("time", Query.Direction.DESCENDING)
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.w("Firestore Error", "Listen failed", e);
+                        return;
+                    }
+
+                    if (queryDocumentSnapshots != null) {
+                        bizList.clear();
+                        int[] loadedCount = {0};
+
+                        for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()) {
+                            String id = document.getId();
+                            String content = document.getString("content");
+                            long time = document.getLong("time");
+                            String username = document.getString("username");
+
+                            Biz biz = new Biz(id, content, time, username, 0, userId);
+                            bizList.add(biz);
+
+                            DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/")
+                                    .getReference("likesRef").child(id);
+
+                            likesRef.child("likeCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        int likeCount  = snapshot.getValue(Integer.class);
+                                        biz.setLikes(likeCount);
+                                        bizAdapter.notifyDataSetChanged();
+                                    }
+
+                                    loadedCount[0]++;
+
+                                    if (loadedCount[0] == queryDocumentSnapshots.size()) {
+                                        bizList.sort((b1, b2) -> {
+                                            Log.w("Sorting process", "Score 1: " + b1.calculateScore() + " - Score 2: " + b2.calculateScore());
+                                            return Double.compare(b2.calculateScore(), b1.calculateScore());
+                                        });
+
+                                        bizAdapter.notifyDataSetChanged();
+                                        Log.w("Sorting process", "Biz feed sorted correctly");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.w("Realtime Database", "Failed to read like count", error.toException());
+                                }
+                            });
+                        }
+
+                        int bizCount = bizList.size();
+                        TextView bizCountTextView = findViewById(R.id.biz_count);
+
+                        String bizCountText = ("Bizs: " + bizCount);
+                        bizCountTextView.setText(bizCountText);
+
+                    } else {
+                        Log.d("Firestore Data", "No documents found");
+                    }
+                });
     }
 }

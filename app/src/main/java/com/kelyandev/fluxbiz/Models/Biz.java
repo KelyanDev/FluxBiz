@@ -65,7 +65,7 @@ public class Biz {
         this.likeCount = likeCount;
     }
 
-    private String getUserId() {
+    public String getUserId() {
         return userId;
     }
 
