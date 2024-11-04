@@ -78,7 +78,9 @@ public class Biz {
     }
 
     public void decrementLikes() {
-        likeCount--;
+        if (likeCount > 0) {
+            likeCount--;
+        }
     }
 
     public double calculateScore() {

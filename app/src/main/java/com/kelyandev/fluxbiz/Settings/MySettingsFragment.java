@@ -9,7 +9,6 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
-import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
 
 public class MySettingsFragment extends PreferenceFragmentCompat {
@@ -36,6 +35,6 @@ public class MySettingsFragment extends PreferenceFragmentCompat {
         Toast.makeText(getActivity(), "Déconnexion réussie", Toast.LENGTH_SHORT).show();
 
         startActivity(new Intent(getActivity(), LoginActivity.class));
-        getActivity().finish();
+        getActivity().finishAffinity();
     }
 }

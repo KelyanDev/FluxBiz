@@ -90,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     user.updateProfile(profileUpdates).addOnCompleteListener(profileTask -> {
                         if (profileTask.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Votre compte a bien été créer", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Votre compte a bien été créé", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                             finish();
                         } else {

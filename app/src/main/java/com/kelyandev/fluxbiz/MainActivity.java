@@ -1,5 +1,8 @@
 package com.kelyandev.fluxbiz;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private DrawerLayout drawerLayout;
     private ImageButton button, navButton;
+    private BroadcastReceiver logoutReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,17 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Database Auth
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         // Recycler View
         recyclerView = findViewById(R.id.recyclerViewBiz);
@@ -79,15 +94,8 @@ public class MainActivity extends AppCompatActivity {
         swiperefreshlayout.setProgressBackgroundColorSchemeColor(colorOnPrimary);
 
         // Swipe Refresh Layout
-        swiperefreshlayout.setOnRefreshListener(() -> {
-            refreshRecyclerViewData();
+        swiperefreshlayout.setOnRefreshListener(this::refreshRecyclerViewData);
 
-            swiperefreshlayout.setRefreshing(false);
-        });
-
-        // Database Auth
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         bizList = new ArrayList<>();
 
@@ -99,18 +107,10 @@ public class MainActivity extends AppCompatActivity {
 
         loadDataFromFirestore();
 
-        if (currentUser == null) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            String username = currentUser.getDisplayName();
-        }
-
         // Create Biz Button
         button = findViewById(R.id.buttonLog);
 
-        button.setOnClickListener( view -> {
+        button.setOnClickListener(view -> {
             startActivity(new Intent(MainActivity.this, CreateBizActivity.class));
         });
 
@@ -130,13 +130,11 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = headerView.findViewById(R.id.user_name);
 
-        if (currentUser != null) {
-            String displayName = currentUser.getDisplayName();
-            if (displayName != null) {
-                navUsername.setText(displayName);
-            } else {
-                navUsername.setText("");
-            }
+        String displayName = currentUser.getDisplayName();
+        if (displayName != null) {
+            navUsername.setText(displayName);
+        } else {
+            navUsername.setText("");
         }
 
 
@@ -145,13 +143,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
             } else if (item.getItemId() == R.id.nav_profile) {
-                Intent profileIntent = new Intent (MainActivity.this, ProfilActivity.class);
+                Intent profileIntent = new Intent(MainActivity.this, ProfilActivity.class);
                 startActivity(profileIntent);
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
-
     }
 
     private void refreshRecyclerViewData() {
@@ -160,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadDataFromFirestore() {
+        swiperefreshlayout.setRefreshing(true);
+
         db.collection("bizs")
                 .orderBy("time", Query.Direction.DESCENDING)
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
@@ -192,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
                                     if (snapshot.exists()) {
                                         int likeCount = snapshot.getValue(Integer.class);
                                         biz.setLikes(likeCount);
-                                        bizAdapter.notifyDataSetChanged();
                                     }
 
                                     loadedCount[0]++;
@@ -205,14 +203,15 @@ public class MainActivity extends AppCompatActivity {
 
                                         bizAdapter.notifyDataSetChanged();
                                         Log.w("Sorting process", "Biz list sorted correctly");
+
+                                        swiperefreshlayout.setRefreshing(false);
                                     }
-
-
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     Log.w("Realtime Database", "Failed to read like count", error.toException());
+                                    swiperefreshlayout.setRefreshing(false);
                                 }
                             });
                         }
@@ -220,8 +219,10 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Firestore data", "Document fetched " + bizList.size());
                     } else {
                         Log.d("Firestore Data", "No Documents found");
+                        swiperefreshlayout.setRefreshing(false);
                     }
                 });
+
     }
 
 }

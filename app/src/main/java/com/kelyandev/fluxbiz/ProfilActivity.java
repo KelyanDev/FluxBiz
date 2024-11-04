@@ -118,7 +118,6 @@ public class ProfilActivity extends AppCompatActivity {
                                     if (snapshot.exists()) {
                                         int likeCount  = snapshot.getValue(Integer.class);
                                         biz.setLikes(likeCount);
-                                        bizAdapter.notifyDataSetChanged();
                                     }
 
                                     loadedCount[0]++;

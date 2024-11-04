@@ -49,6 +49,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         holder.usernameTextView.setText(biz.getUsername());
         holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
         holder.timeTextView.setText(biz.getFormattedDate());
+        holder.buttonLike.setSelected(false);
 
         DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/").getReference("likesRef").child(biz.getId());
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
