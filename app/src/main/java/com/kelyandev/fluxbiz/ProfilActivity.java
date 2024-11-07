@@ -30,6 +30,9 @@ import com.kelyandev.fluxbiz.Models.Biz;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity in which the current user gets to see his Bizzes
+ */
 public class ProfilActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -83,6 +86,9 @@ public class ProfilActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Gets the current user's Biz from Firestore and Realtime Database
+     */
     private void loadUserDataFromFirestore() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String userId = currentUser.getUid();

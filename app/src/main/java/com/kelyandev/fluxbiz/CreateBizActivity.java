@@ -24,6 +24,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * Activity used by logged in users to post a new Biz
+ */
 public class CreateBizActivity extends AppCompatActivity {
 
     private EditText bizContent;
@@ -83,6 +87,9 @@ public class CreateBizActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(view -> sendBiz());
     }
 
+    /**
+     * Gets the username of the current FluzBiz's user
+     */
     private void getCurrentUsername() {
         FirebaseUser currentUser = auth.getCurrentUser();
 
@@ -93,6 +100,9 @@ public class CreateBizActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Create the Biz inside both Firestore and Realtime Database
+     */
     private void sendBiz() {
         String bizText = bizContent.getText().toString().trim();
 

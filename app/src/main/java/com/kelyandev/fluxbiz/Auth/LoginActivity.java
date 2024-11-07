@@ -19,6 +19,10 @@ import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
 import android.widget.Toast;
 
+
+/**
+ * Activity used by users to log in their FluzBiz account
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextPassword;
@@ -51,6 +55,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(view -> loginUser());
     }
 
+    /**
+     * Function to log in an existing user in FluzBiz
+     */
     private void loginUser() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();

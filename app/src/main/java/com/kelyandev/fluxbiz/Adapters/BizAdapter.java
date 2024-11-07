@@ -24,16 +24,32 @@ import com.kelyandev.fluxbiz.R;
 
 import java.util.List;
 
+/**
+ * Adapter to manage and display the Biz list in a RecyclerView
+ */
 public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
 
     private List<Biz> bizList;
     private String currentUserId;
 
+    /**
+     * Constructor of BizAdapter
+     * @param bizList list of Biz objects
+     * @param currentUserId ID of the current user
+     */
     public BizAdapter(List<Biz> bizList, String currentUserId) {
         this.bizList = bizList;
         this.currentUserId = currentUserId;
     }
 
+
+    /**
+     * Create a new instance of BizViewHolder when needed
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new instance of BizViewHolder
+     */
     @NonNull
     @Override
     public BizViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -41,6 +57,13 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         return new BizViewHolder(view);
     }
 
+
+    /**
+     * Binds the Biz data to the views in BizViewHolder
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull BizViewHolder holder, int position) {
         Biz biz = bizList.get(position);
@@ -95,15 +118,28 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
 
     }
 
+    /**
+     * Return the total number of items in the Biz list
+     * @return The size of the Biz list
+     */
     @Override
     public int getItemCount() {
         return bizList.size();
     }
 
+
+    /**
+     * ViewHolder class for Biz, holding references to each UI element
+     */
     static class BizViewHolder extends RecyclerView.ViewHolder {
         TextView contentTextView, usernameTextView, likeCountTextView, timeTextView;
         public ImageButton buttonLike, buttonOptions;
 
+
+        /**
+         * Constructor for BizViewHolder
+         * @param itemview The root view of each item in the RecyclerView
+         */
         public BizViewHolder(@NonNull View itemview) {
             super(itemview);
             buttonLike = itemview.findViewById(R.id.buttonLike);
@@ -115,6 +151,12 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         }
     }
 
+
+    /**
+     * Displays a bottom sheet dialog with options for the Biz item
+     * @param context The context of the current activity
+     * @param biz The Biz object for which options will be shown
+     */
     private void showBottomSheetDialog(Context context, Biz biz) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         View bottomSheetView = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_options_owned, null);
@@ -139,6 +181,11 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         bottomSheetDialog.show();
     }
 
+
+    /**
+     * Deletes a Biz from both Firestore and Realtime Database, then updates the adapter
+     * @param biz The Biz object to be deleted
+     */
     private void deleteBiz(Biz biz) {
         DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("likesRef").child(biz.getId());

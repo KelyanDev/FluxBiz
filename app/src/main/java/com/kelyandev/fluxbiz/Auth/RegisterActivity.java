@@ -15,16 +15,15 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * Activity used by new users to create a FluzBiz account
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText editTextUsername, editTextEmail, editTextPassword;
@@ -61,6 +60,9 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(view -> registerUser());
     }
 
+    /**
+     * Function to register the user in Firebase
+     */
     private void registerUser() {
         String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();

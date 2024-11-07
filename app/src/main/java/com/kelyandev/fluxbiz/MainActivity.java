@@ -156,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
         swiperefreshlayout.setRefreshing(false);
     }
 
+    /**
+     * Function to load Bizzes from Firestore
+     */
     private void loadDataFromFirestore() {
         swiperefreshlayout.setRefreshing(true);
 
