@@ -5,13 +5,14 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-activity = "1.9.2"
-constraintlayout = "2.1.4"
-firebase-bom = "33.4.0"
-firebase-auth = "23.0.0"
+activity = "1.9.3"
+constraintlayout = "2.2.0"
+firebase-bom = "33.5.1"
+firebase-auth = "23.1.0"
 firebase-database = "21.0.0"
-firebase-firestore = "25.1.0"
-firebase-messaging = "24.0.2"
+firebase-firestore = "25.1.1"
+firebase-messaging = "24.0.3"
+crashlytics-gradle = "3.0.2"
 preference = "1.2.1"
 swiperefreshlayout = "1.1.0"
 
@@ -31,10 +32,12 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebase-firestore" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebase-messaging" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics"}
 preference = { module = "androidx.preference:preference", version.ref = "preference" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+crashlytics-gradle = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-gradle"}
 

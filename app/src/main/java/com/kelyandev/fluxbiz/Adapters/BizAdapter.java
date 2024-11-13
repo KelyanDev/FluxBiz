@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -131,7 +132,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
     /**
      * ViewHolder class for Biz, holding references to each UI element
      */
-    static class BizViewHolder extends RecyclerView.ViewHolder {
+    public static class BizViewHolder extends RecyclerView.ViewHolder {
         TextView contentTextView, usernameTextView, likeCountTextView, timeTextView;
         public ImageButton buttonLike, buttonOptions;
 
@@ -161,8 +162,8 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         View bottomSheetView = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_options_owned, null);
 
-        TextView deleteOption = bottomSheetView.findViewById(R.id.option_delete);
-        TextView cancelOption = bottomSheetView.findViewById(R.id.option_cancel);
+        LinearLayout deleteOption = bottomSheetView.findViewById(R.id.option_delete);
+        LinearLayout cancelOption = bottomSheetView.findViewById(R.id.option_cancel);
 
         if (biz.getUserId().equals(currentUserId)) {
             deleteOption.setVisibility(View.VISIBLE);
@@ -170,12 +171,12 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
                 deleteBiz(biz);
                 bottomSheetDialog.dismiss();
             });
+        } else {
+            deleteOption.setVisibility(View.GONE);
         }
 
         cancelOption.setVisibility(View.VISIBLE);
-        cancelOption.setOnClickListener(v -> {
-            bottomSheetDialog.dismiss();
-        });
+        cancelOption.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();

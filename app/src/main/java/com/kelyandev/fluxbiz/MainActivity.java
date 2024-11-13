@@ -1,13 +1,12 @@
 package com.kelyandev.fluxbiz;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
@@ -21,6 +20,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.content.Intent;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private DrawerLayout drawerLayout;
     private ImageButton button, navButton;
-    private BroadcastReceiver logoutReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +80,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewBiz);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
         swiperefreshlayout = findViewById(R.id.swipeRefreshLayout);
         swiperefreshlayout.setColorSchemeColors(
-                getResources().getColor(R.color.my_light_primary)
+                ContextCompat.getColor(this, R.color.my_light_primary)
         );
 
         TypedValue typedValue = new TypedValue();
@@ -110,9 +110,7 @@ public class MainActivity extends AppCompatActivity {
         // Create Biz Button
         button = findViewById(R.id.buttonLog);
 
-        button.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, CreateBizActivity.class));
-        });
+        button.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, CreateBizActivity.class)));
 
         // Nav bar
         drawerLayout = findViewById(R.id.drawer_layout);

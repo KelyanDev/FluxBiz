@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.crashlytics.gradle)
+    id("com.google.firebase.firebase-perf") version "1.4.2" apply false
     id("com.google.gms.google-services")
 }
 
@@ -40,6 +42,9 @@ dependencies {
     implementation (libs.firebase.database)
     implementation (libs.firebase.firestore)
     implementation (libs.firebase.messaging)
+    implementation (libs.firebase.crashlytics)
+    implementation ("com.google.firebase:firebase-perf")
+
     implementation (libs.preference)
     implementation(libs.swiperefreshlayout)
     implementation(libs.appcompat)

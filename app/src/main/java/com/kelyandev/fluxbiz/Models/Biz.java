@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a Biz message; It is the FluxBiz equivalent of a Tweet.
- * A Biz contains an ID, content, creation time, owner's username, likes count, aswell as the user's ID
+ * A Biz contains an ID, content, creation time, owner's username, likes count, as well as the user's ID
  */
 public class Biz {
     private String id;

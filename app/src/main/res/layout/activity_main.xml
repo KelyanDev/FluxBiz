@@ -8,120 +8,106 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/block_border"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:title="" />
 
-        <ImageButton
-            android:id="@+id/navbarButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="15dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/profile_picture"
-            android:scaleType="centerCrop"
-            android:src="@drawable/user_default"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="77dp"
-            android:layout_height="63dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="@string/logo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            app:layout_constraintBottom_toTopOf="@+id/navbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewBiz"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:clipToPadding="false"
-                android:padding="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toTopOf="@+id/navbar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"
-                tools:listitem="@layout/item_biz" />
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/block_border"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll|enterAlways">
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                    <androidx.appcompat.widget.Toolbar
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="2dp"
+                        app:layout_scrollFlags="scroll|enterAlways"
+                        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
+                        app:title="">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                        <ImageButton
+                            android:id="@+id/navbarButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_margin="10dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/profile_picture"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/user_default" />
 
-        <ImageButton
-            android:id="@+id/buttonLog"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="436dp"
-            android:background="@drawable/rounded_button"
-            android:src="@drawable/ic_create"
-            android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@+id/navbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.954"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:layout_constraintVertical_bias="0.786"
-            tools:ignore="HardcodedText" />
+                        <ImageView
+                            android:id="@+id/imageView3"
+                            android:layout_width="77dp"
+                            android:layout_height="63dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/logo"
+                            app:srcCompat="@drawable/logo" />
+                    </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/navbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/nav_border"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:title="" />
 
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:contentDescription="@string/home_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/navbar"
-            app:layout_constraintTop_toTopOf="@+id/navbar"
-            app:srcCompat="@drawable/ic_home" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewBiz"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:clipToPadding="false"
+                    android:padding="8dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_biz" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_anchor="@id/swipeRefreshLayout"
+                app:layout_anchorGravity="center_horizontal"/>
+
+            <ImageButton
+                android:id="@+id/buttonLog"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/rounded_button"
+                android:src="@drawable/ic_create"
+                app:layout_anchor="@id/swipeRefreshLayout"
+                app:layout_anchorGravity="bottom|end"
+                tools:ignore="ContentDescription,HardcodedText" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/navbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginBottom="0dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/nav_border"
+                app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior">
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="34dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@string/home_button"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_home_checked" />
+            </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
