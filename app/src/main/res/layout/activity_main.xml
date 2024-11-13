@@ -17,37 +17,36 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/block_border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="" />
+            app:title="">
 
-        <ImageButton
-            android:id="@+id/navbarButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="15dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/profile_picture"
-            android:scaleType="centerCrop"
-            android:src="@drawable/user_default"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            <ImageButton
+                android:id="@+id/navbarButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="15dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/profile_picture"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_default"
+                app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="77dp"
-            android:layout_height="63dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="@string/logo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="77dp"
+                android:layout_height="63dp"
+                android:contentDescription="@string/logo"
+                android:layout_gravity="center_horizontal"
+                app:srcCompat="@drawable/logo" />
+
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
@@ -120,7 +119,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/navbar"
             app:layout_constraintTop_toTopOf="@+id/navbar"
-            app:srcCompat="@drawable/ic_home" />
+            app:srcCompat="@drawable/ic_home_checked" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
