@@ -102,18 +102,31 @@ This project was developed as part of my studies; the similarities with the Twit
 <!-- GETTING STARTED -->
 ## Getting Started
 
-There is no current release for this app, so for now you won't be able to install it on your phone (atleast not easily)
-
-The fist release should be posted relatively soon, so keep your eyes on this project while I polish the first version of the app.
+Follow these steps to get your app up and running:
 
 ### Prerequisites
 
-I'll complete these tab upon the 1.0 release.
+Before installing the app, you need to enable installation from unknown sources on your Android device
+
+- Go to settings > Security
+- Check the option "Unknown sources"
+- Tap "OK" on the prompt message
+- Select "Trust"
 
 ### Installation
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Download the APK:
+- Go to the [Releases page](https://github.com/KelyanDev/FluxBiz/releases) of the project
+- Download the apk file from the latest release (named app-release.apk)
 
+Install the APK:
+- Once the file is downloaded, open the file to begin the installation
+- Follow the on-screen prompts to install the app on your device
+
+Launch the app:
+- After installation, open the app from your home screen or app drawer and start using it!
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- USAGE EXAMPLES -->
