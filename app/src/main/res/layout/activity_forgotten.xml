@@ -8,18 +8,6 @@
     tools:context=".Auth.LoginActivity">
 
     <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="16dp"
-        android:hint="@string/mot_de_passe"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextEmail" />
-
-    <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="379dp"
         android:layout_height="wrap_content"
@@ -30,40 +18,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <TextView
-        android:id="@+id/textViewForgottenPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:text="Mot de passe oubliée ?"
-        android:textColor="@color/my_light_primary"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
-
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/buttonSendMail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="@string/se_connecter"
+        android:layout_marginTop="60dp"
+        android:text="@string/ButtonSendMail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewForgottenPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
     <TextView
-        android:id="@+id/textViewRegister"
+        android:id="@+id/textViewLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
-        android:text="@string/switch_register"
+        android:text="@string/ConnectNormally"
         android:textSize="16sp"
         android:textColor="@color/my_light_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonLogin" />
+        app:layout_constraintTop_toBottomOf="@id/buttonSendMail" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -80,10 +56,10 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="332dp"
-        android:layout_height="54dp"
+        android:layout_height="0dp"
         android:gravity="center"
-        android:singleLine="true"
-        android:text="@string/Login_title"
+        android:singleLine="false"
+        android:text="@string/reset_password"
         android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="@color/my_light_primary"

@@ -23,4 +23,7 @@
     <string name="nav_help_text">Aide et Support</string>
     <string name="nav_settings_text">Paramètres</string>
     <string name="nav_profile_text">Profil</string>
+    <string name="ConnectNormally">Se connecter normalement</string>
+    <string name="ButtonSendMail">Envoyer le mail</string>
+    <string name="reset_password">Réinitialiser votre mot de passe</string>
 </resources>

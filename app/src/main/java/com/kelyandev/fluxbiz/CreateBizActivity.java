@@ -105,6 +105,7 @@ public class CreateBizActivity extends AppCompatActivity {
      */
     private void sendBiz() {
         String bizText = bizContent.getText().toString().trim();
+        buttonSend.setEnabled(false);
 
         if (!bizText.isEmpty() && currentUsername != null) {
             FirebaseUser currentUser = auth.getCurrentUser();
@@ -131,14 +132,18 @@ public class CreateBizActivity extends AppCompatActivity {
                             finish();
                         }).addOnFailureListener(e -> {
                             Toast.makeText(CreateBizActivity.this,"Erreur lors de l'envoi", Toast.LENGTH_SHORT).show();
+                            buttonSend.setEnabled(true);
                         });
                     }).addOnFailureListener(e -> {
                         Toast.makeText(CreateBizActivity.this,"Erreur lors de l'envoi", Toast.LENGTH_SHORT).show();
+                        buttonSend.setEnabled(true);
                     });
         } else if (currentUsername == null) {
             Toast.makeText(CreateBizActivity.this,"Nom d'utilisateur introuvable", Toast.LENGTH_SHORT).show();
+            buttonSend.setEnabled(true);
         } else {
             Toast.makeText(CreateBizActivity.this,"Biz vide", Toast.LENGTH_SHORT).show();
+            buttonSend.setEnabled(true);
         }
     }
 }

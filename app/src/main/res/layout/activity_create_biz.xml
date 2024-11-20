@@ -20,6 +20,7 @@
         android:scrollHorizontally="false"
         android:singleLine="false"
         android:background="@android:color/transparent"
+        android:maxLength="300"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView4"

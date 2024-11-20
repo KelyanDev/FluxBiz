@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextPassword;
     private Button loginButton;
-    private TextView viewRegister;
+    private TextView viewRegister, viewForgotten;
     private FirebaseAuth mAuth;
 
     @Override
@@ -45,11 +45,16 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         viewRegister = findViewById(R.id.textViewRegister);
+        viewForgotten = findViewById(R.id.textViewForgottenPassword);
         loginButton = findViewById(R.id.buttonLogin);
         mAuth = FirebaseAuth.getInstance();
 
         viewRegister.setOnClickListener( view -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        });
+
+        viewForgotten.setOnClickListener( view -> {
+            startActivity(new Intent(LoginActivity.this, ForgottenPassActivity.class));
         });
 
         loginButton.setOnClickListener(view -> loginUser());
@@ -61,13 +66,16 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        loginButton.setEnabled(false);
 
         if (TextUtils.isEmpty(email)) {
             editTextEmail.setError("Votre email est requise pour vous connecter.");
+            loginButton.setEnabled(true);
             return;
         }
         if (TextUtils.isEmpty(password)) {
             editTextPassword.setError("Vous devez indiquer votre mot de passe");
+            loginButton.setEnabled(true);
             return;
         }
 
@@ -75,11 +83,19 @@ public class LoginActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    Toast.makeText(LoginActivity.this, "Connexion réussie", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    finish();
+                    if (user.isEmailVerified()) {
+                        Toast.makeText(this, "Connexion réussie", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Votre email n'est pas vérifiée", Toast.LENGTH_LONG).show();
+                        mAuth.signOut();
+                        user.sendEmailVerification();
+                        loginButton.setEnabled(true);
+                    }
                 } else {
                     Toast.makeText(LoginActivity.this, "Connexion échouée" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    loginButton.setEnabled(true);
                 }
             }
         });

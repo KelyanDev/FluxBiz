@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FluxBiz"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="channel_id" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -28,12 +33,13 @@
         <activity
             android:name=".Auth.RegisterActivity"
             android:label="Register">
-
+        </activity>
+        <activity android:name=".Auth.ForgottenPassActivity"
+            android:label="Reset Password">
         </activity>
         <activity
             android:name=".CreateBizActivity"
             android:label="Create Biz">
-
         </activity>
         <activity android:name=".Settings.SettingsActivity"
             android:label="Settings">
@@ -41,6 +47,12 @@
         <activity android:name=".ProfilActivity"
             android:label="Profile">
         </activity>
+        <service
+            android:name=".Notifications.MessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
-
 </manifest>
