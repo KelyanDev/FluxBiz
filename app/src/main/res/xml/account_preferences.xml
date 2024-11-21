@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<Preference
+    app:key="username"
+    app:title="Nom d'utilisateur"
+    app:summary="Mettez à jour votre nom d'utilisateur (WIP)"/>
+
+<Preference
+    app:key="username"
+    app:title="Adresse mail"
+    app:summary="Mettez à jour votre adresse mail (WIP)"/>
+
+<Preference
+    app:key="profilepicture"
+    app:title="Photo de profil"
+    app:summary="Mettez à jour votre image de profil (WIP)"/>
+
+<Preference
+    app:key="logout"
+    app:title="Se déconnecter"
+    android:layout="@layout/logout_button"/>
+
+</androidx.preference.PreferenceScreen>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="Sécurité du compte">
+        <Preference
+            app:key="password"
+            app:title="Mot de passe"
+            app:summary="Mettre à jour votre mot de passe actuel (WIP)"/>
+
+        <Preference
+            app:key="2fa"
+            app:title="Double authentification"
+            app:summary="Protégez votre compte avec une vérification supplémentaire (WIP)"/>
+
+        <Preference
+            app:key="connected"
+            app:title="Afficher les connexions actives"
+            app:summary="Vérifiez les appareils connectés à votre compte (WIP)"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="Suppression du compte">
+        <Preference
+            app:key="delAccount"
+            app:title="Supprimer mon compte"
+            android:layout="@layout/delaccount_button"/>
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

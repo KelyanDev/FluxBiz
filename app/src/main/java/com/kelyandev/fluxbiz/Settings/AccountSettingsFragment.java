@@ -11,13 +11,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
 import com.kelyandev.fluxbiz.R;
 
-public class MySettingsFragment extends PreferenceFragmentCompat {
+public class AccountSettingsFragment extends PreferenceFragmentCompat {
 
     private FirebaseAuth mAuth;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        setPreferencesFromResource(R.xml.preferences, rootKey);
+        setPreferencesFromResource(R.xml.account_preferences, rootKey);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -28,8 +28,9 @@ public class MySettingsFragment extends PreferenceFragmentCompat {
                 return true;
             });
         }
-    }
 
+
+    }
     private void logoutUser() {
         mAuth.signOut();
         Toast.makeText(getActivity(), "Déconnexion réussie", Toast.LENGTH_SHORT).show();

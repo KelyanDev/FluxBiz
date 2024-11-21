@@ -8,6 +8,9 @@
         <item name="colorOutline">@color/my_light_border</item>
         <item name="colorOnSurface">@color/colorButtonDisabled</item>
 
+        <item name="android:statusBarColor">@color/my_light_on_primary</item>
+        <item name="android:windowLightStatusBar">true</item>
+        
     </style>
 
     <style name="Theme.FluxBiz" parent="Base.Theme.FluxBiz" />

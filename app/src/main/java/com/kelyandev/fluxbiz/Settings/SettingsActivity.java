@@ -1,10 +1,15 @@
 package com.kelyandev.fluxbiz.Settings;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toolbar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.kelyandev.fluxbiz.R;
 
@@ -15,16 +20,36 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.settings_container, new MySettingsFragment())
+                .replace(R.id.settings_container, new RootSettingsFragment())
                 .commit();
-
         setContentView(R.layout.activity_settings);
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
+        ImageButton backArrow  = findViewById(R.id.backArrow);
+
+        backArrow.setOnClickListener(v -> {
+            onBackPressed();
+        });
+
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.settings_container);
+            if (currentFragment != null) {
+                if (currentFragment instanceof AccountSettingsFragment) {
+                    toolbarTitle.setText(R.string.account);
+                } else if (currentFragment instanceof SecuritySettingsFragment) {
+                    toolbarTitle.setText(R.string.security);
+                } else {
+                    toolbarTitle.setText(R.string.params);
+                }
+            }
+        });
+
 
 
     }

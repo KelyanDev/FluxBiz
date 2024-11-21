@@ -1,5 +1,7 @@
 package com.kelyandev.fluxbiz.Models;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -184,8 +186,12 @@ public class Biz {
             return ageInMinutes + "min";
         } else if (ageInHours < 24) {
             return ageInHours + "h";
-        } else {
+        } else if (ageInDays < 30){
             return ageInDays + "d";
+        } else {
+            Date date = new Date(time);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.format(date);
         }
     }
 }

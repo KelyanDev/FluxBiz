@@ -13,6 +13,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
@@ -93,9 +96,15 @@ public class LoginActivity extends AppCompatActivity {
                         user.sendEmailVerification();
                         loginButton.setEnabled(true);
                     }
+                }
+            } else {
+                loginButton.setEnabled(true);
+                if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                    Toast.makeText(this, "Ce compte n'existe pas.", Toast.LENGTH_SHORT).show();
+                } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                    Toast.makeText(this,"Identifiant ou mot de passe incorrect(s). Réessayez", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Connexion échouée" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    loginButton.setEnabled(true);
+                    Toast.makeText(this,"Erreur: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

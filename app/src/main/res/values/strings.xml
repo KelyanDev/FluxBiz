@@ -26,4 +26,7 @@
     <string name="ConnectNormally">Se connecter normalement</string>
     <string name="ButtonSendMail">Envoyer le mail</string>
     <string name="reset_password">Réinitialiser votre mot de passe</string>
+    <string name="params">Paramètres</string>
+    <string name="account">Mon Compte</string>
+    <string name="security">Sécurité</string>
 </resources>
