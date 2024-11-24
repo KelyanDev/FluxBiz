@@ -5,11 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +31,6 @@ public class SecuritySettingsFragment extends PreferenceFragmentCompat {
 
         mAuth = FirebaseAuth.getInstance();
 
-
         Preference delAccountPreference = findPreference("delAccount");
         if (delAccountPreference != null) {
             delAccountPreference.setOnPreferenceClickListener(preference -> {
@@ -38,13 +41,26 @@ public class SecuritySettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void showDeleteAccountConfirmation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Suppression du compte");
+
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(40,20,40,20);
+
+        TextView instructionText = new TextView(requireContext());
+        instructionText.setText("Vous devez entrer votre mot de passe pour effectuer cette action");
+        instructionText.setTextSize(16);
+        instructionText.setPadding(0,0,0,20);
 
         final EditText passwordInput = new EditText(requireContext());
         passwordInput.setHint("Entrez votre mot de passe");
         passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        builder.setView(passwordInput);
+
+        layout.addView(instructionText);
+        layout.addView(passwordInput);
+
+        builder.setView(layout);
 
         builder.setPositiveButton("Confirmer", (dialog, which) -> {
             String password = passwordInput.getText().toString().trim();

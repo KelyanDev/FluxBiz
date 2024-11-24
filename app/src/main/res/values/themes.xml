@@ -12,6 +12,5 @@
         <item name="android:windowLightStatusBar">true</item>
         
     </style>
-
     <style name="Theme.FluxBiz" parent="Base.Theme.FluxBiz" />
 </resources>

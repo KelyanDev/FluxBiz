@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single"
+    <group android:checkableBehavior="none"
         android:id="@+id/profile_options">
         <item
             android:id="@+id/nav_profile"
@@ -11,7 +11,7 @@
             android:title="@string/nav_profile_text" />
     </group>
 
-    <group android:checkableBehavior="single"
+    <group android:checkableBehavior="none"
         android:id="@+id/settings_and_help">
         <item
             android:id="@+id/nav_settings"

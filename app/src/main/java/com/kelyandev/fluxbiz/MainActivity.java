@@ -1,7 +1,11 @@
 package com.kelyandev.fluxbiz;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +26,7 @@ import android.content.Intent;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +38,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.kelyandev.fluxbiz.Adapters.BizAdapter;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
 import com.kelyandev.fluxbiz.Models.Biz;
@@ -50,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private DrawerLayout drawerLayout;
     private ImageButton button, navButton;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +71,17 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Database Auth
+        // Managing Firebase remote config
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        fetchRemoteConfig();
+
+        // Database Auth / Firebase instances
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -93,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Swipe Refresh Layout
         swiperefreshlayout.setOnRefreshListener(this::refreshRecyclerViewData);
-
 
         bizList = new ArrayList<>();
 
@@ -133,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             navUsername.setText("");
         }
 
-
+        // Managing items in the drawer layout
         navigationView.setNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_settings) {
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
@@ -141,12 +158,17 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.nav_profile) {
                 Intent profileIntent = new Intent(MainActivity.this, ProfilActivity.class);
                 startActivity(profileIntent);
+            } else if (item.getItemId() == R.id.nav_help) {
+                openSupportPage();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
     }
 
+    /**
+     * Function to force the recyclerView to refresh
+     */
     private void refreshRecyclerViewData() {
         loadDataFromFirestore();
         swiperefreshlayout.setRefreshing(false);
@@ -224,4 +246,82 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Function to open the support page on my Github repo
+     */
+    private void openSupportPage() {
+        String supportUrl = "https://github.com/KelyanDev/FluxBiz/issues/new?body=&labels=help";
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(supportUrl));
+        startActivity(browserIntent);
+    }
+
+    /**
+     * Function to fetch the config from Firebase Remote Config
+     */
+    private void fetchRemoteConfig() {
+        mFirebaseRemoteConfig.fetchAndActivate()
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        String latestAppVersion = mFirebaseRemoteConfig.getString("latest_app_version");
+                        //latestAppVersion = "1.2.0";
+                        Log.d("RemoteConfig", "Latest app version: " + latestAppVersion);
+
+                        checkForAppUpdate(latestAppVersion);
+                    } else {
+                        Log.d("RemoteConfig", "Couldn't get parameters");
+                    }
+                });
+    }
+
+    /**
+     * Function to check if the app is currently running on the latest version available
+     * @param latestAppVersion The latest app version
+     */
+    private void checkForAppUpdate(String latestAppVersion) {
+        String currentAppVersion = getCurrentAppVersion();
+
+        if (isNewVersionRequired(currentAppVersion, latestAppVersion)) {
+            showUpdateDialog();
+        }
+    }
+
+    /**
+     * Function to get the app version currently running
+     * @return The current app version
+     */
+    private String getCurrentAppVersion() {
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "0.0.0";
+        }
+    }
+
+    /**
+     * Function to compare the version currently running and the latest version available
+     * @param currentVersion The version the app is running on
+     * @param minimumVersion The latest version available for the app
+     * @return True if the latest version available is different from the current version, False if it is not
+     */
+    private boolean isNewVersionRequired(String currentVersion, String minimumVersion) {
+        return currentVersion.compareTo(minimumVersion) < 0;
+    }
+
+    /**
+     * Function to show the dialog if there is a new version available.
+     */
+    private void showUpdateDialog() {
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle("Mise à jour disponible")
+                .setMessage("Une nouvelle version de l'application est disponible. Merci d'installer la dernière version")
+                .setPositiveButton("Mettre à jour", null)
+                .setCancelable(false)
+                .show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/KelyanDev/FluxBiz/releases"));
+            startActivity(intent);
+        });
+    }
 }
