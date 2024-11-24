@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         String latestAppVersion = mFirebaseRemoteConfig.getString("latest_app_version");
-                        //latestAppVersion = "1.2.0";
                         Log.d("RemoteConfig", "Latest app version: " + latestAppVersion);
 
                         checkForAppUpdate(latestAppVersion);
