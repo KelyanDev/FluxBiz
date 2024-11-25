@@ -29,4 +29,6 @@
     <string name="params">Paramètres</string>
     <string name="account">Mon Compte</string>
     <string name="security">Sécurité</string>
+    <string name="next">Suivant</string>
+    <string name="confirm">Confirmer</string>
 </resources>

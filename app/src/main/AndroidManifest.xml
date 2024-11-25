@@ -16,6 +16,12 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="channel_id" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notification_icon"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:value="?attr/colorPrimary"/>
 
         <activity
             android:name=".MainActivity"
@@ -48,7 +54,7 @@
             android:label="Profile">
         </activity>
         <service
-            android:name=".Notifications.MessagingService"
+            android:name=".Notifications.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>

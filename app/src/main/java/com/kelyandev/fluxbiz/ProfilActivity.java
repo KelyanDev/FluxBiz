@@ -24,8 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.kelyandev.fluxbiz.Adapters.BizAdapter;
-import com.kelyandev.fluxbiz.Models.Biz;
+import com.kelyandev.fluxbiz.Bizzes.Adapters.BizAdapter;
+import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -15,6 +16,8 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,6 +29,8 @@ import android.content.Intent;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,9 +45,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.kelyandev.fluxbiz.Adapters.BizAdapter;
+import com.kelyandev.fluxbiz.Bizzes.Adapters.BizAdapter;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
-import com.kelyandev.fluxbiz.Models.Biz;
+import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.Settings.SettingsActivity;
 
 import java.util.ArrayList;

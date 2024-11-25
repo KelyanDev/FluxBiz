@@ -3,7 +3,6 @@ package com.kelyandev.fluxbiz.Settings;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -12,6 +11,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.kelyandev.fluxbiz.R;
+import com.kelyandev.fluxbiz.Settings.Account.AccountSettingsFragment;
+import com.kelyandev.fluxbiz.Settings.Security.SecuritySettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -34,7 +35,11 @@ public class SettingsActivity extends AppCompatActivity {
         ImageButton backArrow  = findViewById(R.id.backArrow);
 
         backArrow.setOnClickListener(v -> {
-            onBackPressed();
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                getSupportFragmentManager().popBackStack();
+            } else {
+                finish();
+            }
         });
 
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {

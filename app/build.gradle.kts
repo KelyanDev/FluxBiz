@@ -43,8 +43,8 @@ dependencies {
     implementation (libs.firebase.firestore)
     implementation (libs.firebase.messaging)
     implementation (libs.firebase.crashlytics)
-    implementation ("com.google.firebase:firebase-config")
-    implementation ("com.google.firebase:firebase-perf")
+    implementation (libs.firebase.config)
+    implementation (libs.firebase.perf)
 
     implementation (libs.preference)
     implementation(libs.swiperefreshlayout)

@@ -1,4 +1,4 @@
-package com.kelyandev.fluxbiz.Models;
+package com.kelyandev.fluxbiz.Bizzes.Models;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

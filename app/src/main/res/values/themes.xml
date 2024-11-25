@@ -10,7 +10,12 @@
 
         <item name="android:statusBarColor">@color/my_light_on_primary</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="materialButtonOutlinedStyle">@style/CustomOutlinedButtonStyle</item>
         
     </style>
     <style name="Theme.FluxBiz" parent="Base.Theme.FluxBiz" />
+    <style name="CustomOutlinedButtonStyle" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/my_dark_primary</item>
+        <item name="android:textColor">@color/my_dark_primary</item>
+    </style>
 </resources>

@@ -7,6 +7,8 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.kelyandev.fluxbiz.R;
+import com.kelyandev.fluxbiz.Settings.Account.AccountSettingsFragment;
+import com.kelyandev.fluxbiz.Settings.Security.SecuritySettingsFragment;
 
 public class RootSettingsFragment extends PreferenceFragmentCompat {
 
@@ -31,6 +33,10 @@ public class RootSettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
+    /**
+     * Function to navigate to a fragment
+     * @param fragment The fragment to navigate to
+     */
     private void navigateToFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

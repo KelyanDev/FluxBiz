@@ -15,7 +15,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
 
-public class MessagingService extends FirebaseMessagingService {
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
@@ -44,7 +44,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         String channelId = "channel_id";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.user_default)
+                .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)

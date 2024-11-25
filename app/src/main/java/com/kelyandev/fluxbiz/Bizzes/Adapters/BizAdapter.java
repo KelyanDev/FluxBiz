@@ -1,4 +1,4 @@
-package com.kelyandev.fluxbiz.Adapters;
+package com.kelyandev.fluxbiz.Bizzes.Adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -20,7 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.kelyandev.fluxbiz.Models.Biz;
+import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.R;
 
 import java.util.List;

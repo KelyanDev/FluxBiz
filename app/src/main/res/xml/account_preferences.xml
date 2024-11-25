@@ -2,24 +2,29 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<Preference
-    app:key="username"
-    app:title="Nom d'utilisateur"
-    app:summary="Mettez à jour votre nom d'utilisateur (WIP)"/>
+<PreferenceCategory
+    app:title="Gestion du compte">
+    <Preference
+        app:key="username"
+        app:title="Nom d'utilisateur"
+        app:summary="Mettez à jour votre nom d'utilisateur (WIP)"/>
 
-<Preference
-    app:key="username"
-    app:title="Adresse mail"
-    app:summary="Mettez à jour votre adresse mail (WIP)"/>
+    <Preference
+        app:key="mail"
+        app:title="Adresse mail"
+        app:summary="Mettez à jour votre adresse email. La nouvelle adresse sera utilisée pour l'authentification"/>
 
-<Preference
-    app:key="profilepicture"
-    app:title="Photo de profil"
-    app:summary="Mettez à jour votre image de profil (WIP)"/>
-
-<Preference
-    app:key="logout"
-    app:title="Se déconnecter"
-    android:layout="@layout/logout_button"/>
+    <Preference
+        app:key="profilepicture"
+        app:title="Photo de profil"
+        app:summary="Mettez à jour votre image de profil (WIP)"/>
+</PreferenceCategory>
+<PreferenceCategory
+    app:title="Déconnexion">
+    <Preference
+        app:key="logout"
+        app:title="Se déconnecter"
+        android:layout="@layout/logout_button"/>
+</PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>
