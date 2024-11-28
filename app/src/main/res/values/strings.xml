@@ -31,4 +31,8 @@
     <string name="security">Sécurité</string>
     <string name="next">Suivant</string>
     <string name="confirm">Confirmer</string>
+    <string name="change_mail">Changer votre adresse mail</string>
+    <string name="change_username">Changer de nom d\'utilisateur</string>
+    <string name="verif">Vérifiez votre identité</string>
+    <string name="change_password">Changer mon mot de passe</string>
 </resources>

@@ -7,16 +7,19 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
         app:key="username"
         app:title="Nom d'utilisateur"
-        app:summary="Mettez à jour votre nom d'utilisateur (WIP)"/>
+        app:icon="@drawable/ic_username"
+        app:summary="Mettez à jour votre nom d'utilisateur. Vous ne pourrez plus changer votre nom pendant 7 jours"/>
 
     <Preference
         app:key="mail"
         app:title="Adresse mail"
+        app:icon="@drawable/ic_mail"
         app:summary="Mettez à jour votre adresse email. La nouvelle adresse sera utilisée pour l'authentification"/>
 
     <Preference
         app:key="profilepicture"
         app:title="Photo de profil"
+        app:icon="@drawable/ic_profile_picture"
         app:summary="Mettez à jour votre image de profil (WIP)"/>
 </PreferenceCategory>
 <PreferenceCategory

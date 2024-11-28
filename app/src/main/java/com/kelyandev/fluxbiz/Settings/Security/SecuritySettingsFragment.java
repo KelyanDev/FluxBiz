@@ -2,19 +2,13 @@ package com.kelyandev.fluxbiz.Settings.Security;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
@@ -32,9 +26,17 @@ public class SecuritySettingsFragment extends PreferenceFragmentCompat {
         mAuth = FirebaseAuth.getInstance();
 
         Preference delAccountPreference = findPreference("delAccount");
+        Preference changePassword = findPreference("password");
+
         if (delAccountPreference != null) {
             delAccountPreference.setOnPreferenceClickListener(preference -> {
                 showReauthenticationFragment();
+                return true;
+            });
+        }
+        if (changePassword != null) {
+            changePassword.setOnPreferenceClickListener(preference -> {
+                showChangePasswordFragment();
                 return true;
             });
         }
@@ -82,6 +84,16 @@ public class SecuritySettingsFragment extends PreferenceFragmentCompat {
         } else {
             Toast.makeText(requireContext(), "Erreur lors de la réauthentification.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Function to show the fragment to change the password
+     */
+    private void showChangePasswordFragment() {
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.settings_container, new ChangePasswordFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     /**

@@ -10,8 +10,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.kelyandev.fluxbiz.Auth.ReauthenticationFragment;
 import com.kelyandev.fluxbiz.R;
 import com.kelyandev.fluxbiz.Settings.Account.AccountSettingsFragment;
+import com.kelyandev.fluxbiz.Settings.Account.ChangeEmailFragment;
+import com.kelyandev.fluxbiz.Settings.Account.ChangeUsernameFragment;
+import com.kelyandev.fluxbiz.Settings.Security.ChangePasswordFragment;
 import com.kelyandev.fluxbiz.Settings.Security.SecuritySettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -49,7 +53,15 @@ public class SettingsActivity extends AppCompatActivity {
                     toolbarTitle.setText(R.string.account);
                 } else if (currentFragment instanceof SecuritySettingsFragment) {
                     toolbarTitle.setText(R.string.security);
-                } else {
+                } else if (currentFragment instanceof ChangeUsernameFragment) {
+                    toolbarTitle.setText(R.string.change_username);
+                } else if (currentFragment instanceof ChangeEmailFragment) {
+                    toolbarTitle.setText(R.string.change_mail);
+                } else if (currentFragment instanceof ReauthenticationFragment) {
+                    toolbarTitle.setText(R.string.verif);
+                } else if (currentFragment instanceof ChangePasswordFragment) {
+                    toolbarTitle.setText(R.string.change_password);
+                }else {
                     toolbarTitle.setText(R.string.params);
                 }
             }

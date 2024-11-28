@@ -19,6 +19,11 @@
             app:title="Notifications"
             app:icon="@drawable/ic_notifications"
             app:summary="Gérer les paramètres liées aux notifications de l'application"/>
+        <Preference
+            app:key="accessibility"
+            app:title="Accessibilité"
+            app:icon="@drawable/ic_accessibility"
+            app:summary="Amélioration de votre expérience utilisateur, changer la langue, ajuster la taille de la police"/>
     </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

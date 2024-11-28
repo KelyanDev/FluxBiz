@@ -10,7 +10,6 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
 import com.kelyandev.fluxbiz.Auth.ReauthenticationFragment;
 import com.kelyandev.fluxbiz.R;
@@ -24,7 +23,6 @@ public class AccountSettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.account_preferences, rootKey);
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         Preference logoutPreference = findPreference("logout");
         Preference changeUsername = findPreference("username");
@@ -44,13 +42,15 @@ public class AccountSettingsFragment extends PreferenceFragmentCompat {
         }
         if (changeUsername != null) {
             changeUsername.setOnPreferenceClickListener(preference -> {
+                showChangeUsernameFragment();
                 return true;
             });
         }
-
-
     }
 
+    /**
+     * Function to show the fragment used for Reauthentication
+     */
     private void showReauthenticationFragment() {
         ReauthenticationFragment reauthFragment = new ReauthenticationFragment();
 
@@ -76,6 +76,19 @@ public class AccountSettingsFragment extends PreferenceFragmentCompat {
                 .commit();
     }
 
+    /**
+     * Function to show the fragment to change username
+     */
+    private void showChangeUsernameFragment () {
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.settings_container, new ChangeUsernameFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    /**
+     * Function to show the fragment to change Email
+     */
     private void showChangeEmailFragment() {
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.settings_container, new ChangeEmailFragment());
@@ -83,6 +96,9 @@ public class AccountSettingsFragment extends PreferenceFragmentCompat {
         transaction.commit();
     }
 
+    /**
+     * Function to log out the user from the app
+     */
     private void logoutUser() {
         mAuth.signOut();
         Toast.makeText(getActivity(), "Déconnexion réussie", Toast.LENGTH_SHORT).show();
