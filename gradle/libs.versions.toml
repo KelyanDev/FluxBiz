@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.1"
+firebaseAppcheckPlayintegrity = "18.0.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -14,9 +15,12 @@ firebase-firestore = "25.1.1"
 firebase-messaging = "24.1.0"
 crashlytics-gradle = "3.0.2"
 preference = "1.2.1"
+roomCompiler = "2.6.1"
+roomRuntime = "2.6.1"
 swiperefreshlayout = "1.1.0"
 
 [libraries]
+firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity", version.ref = "firebaseAppcheckPlayintegrity" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -36,6 +40,8 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 firebase-perf = { module = "com.google.firebase:firebase-perf" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 preference = { module = "androidx.preference:preference", version.ref = "preference" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 

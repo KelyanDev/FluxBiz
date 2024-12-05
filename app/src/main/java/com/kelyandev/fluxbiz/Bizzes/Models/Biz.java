@@ -13,7 +13,7 @@ public class Biz {
     private String content;
     private long time;
     private String username;
-    private int likeCount;
+    private int likes;
     private String userId;
 
     /**
@@ -28,15 +28,15 @@ public class Biz {
      * @param content The message content of the Biz
      * @param time The creation timestamp in milliseconds
      * @param username The username of the Biz's Author
-     * @param likeCount The number of likes the Biz has
+     * @param likes The number of likes the Biz has
      * @param userId The user ID of the Biz's owner
      */
-    public Biz(String id, String content, long time, String username, int likeCount, String userId) {
+    public Biz(String id, String content, long time, String username, int likes, String userId) {
         this.id = id;
         this.content = content;
         this.time = time;
         this.username = username;
-        this.likeCount = likeCount;
+        this.likes = likes;
         this.userId = userId;
     }
 
@@ -109,15 +109,15 @@ public class Biz {
      * @return The likes count
      */
     public int getLikes() {
-        return likeCount;
+        return likes;
     }
 
     /**
      * Sets a new like count for the Biz
-     * @param likeCount The new like count
+     * @param likes The new like count
      */
-    public void setLikes(int likeCount) {
-        this.likeCount = likeCount;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     /**
@@ -140,15 +140,15 @@ public class Biz {
      * Increments the like count of the Biz by 1
      */
     public void incrementLikes() {
-        likeCount++;
+        likes++;
     }
 
     /**
      * Decrements the like count of the Biz by 1, only if the like count is greater than 0
      */
     public void decrementLikes() {
-        if (likeCount > 0) {
-            likeCount--;
+        if (likes > 0) {
+            likes--;
         }
     }
 
@@ -162,7 +162,7 @@ public class Biz {
         long ageInMillis = currentTime - time;
         long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMillis);
 
-        double alpha = (double) likeCount;
+        double alpha = likes;
 
         return (30 - ageInDays) * alpha;
     }

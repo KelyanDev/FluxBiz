@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -16,8 +15,6 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -29,8 +26,6 @@ import android.content.Intent;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,7 +37,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.MemoryCacheSettings;
+import com.google.firebase.firestore.PersistentCacheSettings;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.Source;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.kelyandev.fluxbiz.Bizzes.Adapters.BizAdapter;
@@ -52,6 +51,8 @@ import com.kelyandev.fluxbiz.Settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private BizAdapter bizAdapter;
     private List<Biz> bizList;
     private FirebaseFirestore db;
+    private FirebaseDatabase rdb;
     private DrawerLayout drawerLayout;
     private ImageButton button, navButton;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
@@ -124,8 +126,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Database connexion
         db = FirebaseFirestore.getInstance();
+        rdb = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/");
+        rdb.setPersistenceEnabled(true);
 
-        loadDataFromFirestore();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
+                .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
+                        .build();
+
+        db.setFirestoreSettings(settings);
+
+        loadDataFromCache();
 
         // Create Biz Button
         button = findViewById(R.id.buttonLog);
@@ -180,6 +191,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Function to load Bizzes from Cache
+     */
+    private void loadDataFromCache() {
+        db.collection("bizs")
+                .orderBy("time", Query.Direction.DESCENDING)
+                .get(Source.CACHE)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        Log.d("Firestore Cache", "Data loaded successfully");
+                        updateBizList(task.getResult().getDocuments());
+                        loadRealtimeDatabaseLikes(true);
+                        loadDataFromFirestore();
+                    } else {
+                        Log.d("Firestore Cache", "No data found in cache");
+                        loadDataFromFirestore();
+                    }
+                });
+    }
+
+    /**
      * Function to load Bizzes from Firestore
      */
     private void loadDataFromFirestore() {
@@ -187,68 +218,97 @@ public class MainActivity extends AppCompatActivity {
 
         db.collection("bizs")
                 .orderBy("time", Query.Direction.DESCENDING)
-                .addSnapshotListener((queryDocumentSnapshots, e) -> {
-                    if (e != null) {
-                        Log.w("Firestore Error", "Listen failed", e);
-                        return;
-                    }
-
-                    if (queryDocumentSnapshots != null) {
-                        bizList.clear();
-
-                        int[] loadedCount = {0};
-
-                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                            String id = document.getId();
-                            String content = document.getString("content");
-                            long time = document.getLong("time");
-                            String username = document.getString("username");
-                            String userId = document.getString("userId");
-
-                            Biz biz = new Biz(id, content, time, username, 0, userId);
-                            bizList.add(biz);
-
-                            DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/")
-                                    .getReference("likesRef").child(id);
-
-                            likesRef.child("likeCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()) {
-                                        int likeCount = snapshot.getValue(Integer.class);
-                                        biz.setLikes(likeCount);
-                                    }
-
-                                    loadedCount[0]++;
-
-                                    if (loadedCount[0] == queryDocumentSnapshots.size()) {
-                                        bizList.sort((b1, b2) -> {
-                                            Log.w("Sorting process", "Score 1: " + b1.calculateScore() + " - Score 2: " + b2.calculateScore());
-                                            return Double.compare(b2.calculateScore(), b1.calculateScore());
-                                        });
-
-                                        bizAdapter.notifyDataSetChanged();
-                                        Log.w("Sorting process", "Biz list sorted correctly");
-
-                                        swiperefreshlayout.setRefreshing(false);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Log.w("Realtime Database", "Failed to read like count", error.toException());
-                                    swiperefreshlayout.setRefreshing(false);
-                                }
-                            });
-                        }
-
-                        Log.d("Firestore data", "Document fetched " + bizList.size());
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        updateBizList(task.getResult().getDocuments());
+                        loadRealtimeDatabaseLikes(false);
                     } else {
-                        Log.d("Firestore Data", "No Documents found");
-                        swiperefreshlayout.setRefreshing(false);
+                        Log.d("Firestore", "Failed to fetch data", task.getException());
                     }
                 });
+    }
 
+    /**
+     * Function to load data from RealtimeDatabase
+     * @param useCache Is the data gonna use the cache or not
+     */
+    private void loadRealtimeDatabaseLikes(boolean useCache) {
+        AtomicInteger completedTasks = new AtomicInteger(0);
+        for (Biz biz: bizList) {
+            DatabaseReference likesRef = rdb.getReference("likesRef").child(biz.getId());
+
+            likesRef.child("likeCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        biz.setLikes(snapshot.getValue(Integer.class));
+                    }
+
+                    if (completedTasks.incrementAndGet() == bizList.size()) {
+                        bizList.sort((b1, b2) -> Double.compare(b2.calculateScore(), b1.calculateScore()));
+
+                        bizAdapter.notifyDataSetChanged();
+                        Log.w("Sorting process", "Biz list sorted correctly");
+
+                        swiperefreshlayout.setRefreshing(false);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.w("Realtime Database", "Failed to read like count", error.toException());
+                    swiperefreshlayout.setRefreshing(false);
+                }
+            });
+
+            if (useCache) {
+                likesRef.keepSynced(true);
+            }
+        }
+    }
+
+    /**
+     * Function to update the Biz list
+     * @param documents The different Bizzes
+     */
+    private void updateBizList(List<DocumentSnapshot> documents) {
+        for (DocumentSnapshot document : documents) {
+            String id = document.getId();
+            Biz existingBiz = findBizById(id);
+
+            if (existingBiz != null) {
+                if (!Objects.equals(existingBiz.getContent(), document.getString("content"))) {
+                    existingBiz.setContent(document.getString("content"));
+                }
+                int index = bizList.indexOf(existingBiz);
+                bizAdapter.notifyItemChanged(index);
+            } else {
+                String content = document.getString("content");
+                long time = document.getLong("time");
+                String username = document.getString("username");
+                String userId = document.getString("userId");
+
+                Biz biz = new Biz(id, content, time, username, 0, userId);
+                bizList.add(biz);
+                bizAdapter.notifyItemInserted(bizList.size() - 1);
+            }
+        }
+        bizAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Function to check if a Biz already exists in the user's feed
+     * @param id The Biz's ID
+     * @return Return the biz if it exists, and null if it doesn't
+     */
+    private Biz findBizById(String id) {
+        for (Biz biz: bizList) {
+            if (biz.getId().equals(id)) {
+                return biz;
+            }
+        }
+        return null;
     }
 
     /**
