@@ -15,6 +15,7 @@ public class Biz {
     private String username;
     private int likes;
     private String userId;
+    private double score;
 
     /**
      * Default constructor for creating an empty Biz instance
@@ -152,19 +153,28 @@ public class Biz {
         }
     }
 
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
     /**
      * Calculates a score for the Biz, based on its age and like count
      * This is used to rank Bizzes by actuality over time
      * @return A double representing the Biz's score
      */
-    public double calculateScore() {
+    public void calculateScore() {
         long currentTime = System.currentTimeMillis();
         long ageInMillis = currentTime - time;
         long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMillis);
 
         double alpha = likes;
 
-        return (30 - ageInDays) * alpha;
+        this.score = (30 - ageInDays) * alpha;
+        //return (30 - ageInDays) * alpha;
     }
 
     /**

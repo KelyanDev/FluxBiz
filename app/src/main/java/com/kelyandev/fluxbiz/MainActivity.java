@@ -243,10 +243,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         biz.setLikes(snapshot.getValue(Integer.class));
+                        biz.calculateScore();
                     }
 
                     if (completedTasks.incrementAndGet() == bizList.size()) {
-                        bizList.sort((b1, b2) -> Double.compare(b2.calculateScore(), b1.calculateScore()));
+                        bizList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
 
                         bizAdapter.notifyDataSetChanged();
                         Log.w("Sorting process", "Biz list sorted correctly");
@@ -280,9 +281,9 @@ public class MainActivity extends AppCompatActivity {
             if (existingBiz != null) {
                 if (!Objects.equals(existingBiz.getContent(), document.getString("content"))) {
                     existingBiz.setContent(document.getString("content"));
+                    int index = bizList.indexOf(existingBiz);
+                    bizAdapter.notifyItemChanged(index);
                 }
-                int index = bizList.indexOf(existingBiz);
-                bizAdapter.notifyItemChanged(index);
             } else {
                 String content = document.getString("content");
                 long time = document.getLong("time");
@@ -294,7 +295,6 @@ public class MainActivity extends AppCompatActivity {
                 bizAdapter.notifyItemInserted(bizList.size() - 1);
             }
         }
-        bizAdapter.notifyDataSetChanged();
     }
 
     /**

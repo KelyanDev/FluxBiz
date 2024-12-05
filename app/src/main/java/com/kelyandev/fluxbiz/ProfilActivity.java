@@ -130,8 +130,8 @@ public class ProfilActivity extends AppCompatActivity {
 
                                     if (loadedCount[0] == queryDocumentSnapshots.size()) {
                                         bizList.sort((b1, b2) -> {
-                                            Log.w("Sorting process", "Score 1: " + b1.calculateScore() + " - Score 2: " + b2.calculateScore());
-                                            return Double.compare(b2.calculateScore(), b1.calculateScore());
+                                            Log.w("Sorting process", "Score 1: " + b1.getScore() + " - Score 2: " + b2.getScore());
+                                            return Double.compare(b2.getScore(), b1.getScore());
                                         });
 
                                         bizAdapter.notifyDataSetChanged();
