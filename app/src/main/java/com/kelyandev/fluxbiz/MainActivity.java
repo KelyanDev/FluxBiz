@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         // Database connexion
         db = FirebaseFirestore.getInstance();
         rdb = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/");
-        rdb.setPersistenceEnabled(true);
 
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())

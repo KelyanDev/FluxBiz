@@ -9,8 +9,10 @@
 
     <EditText
         android:id="@+id/editTextUsername"
-        android:layout_width="379dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="48dp"
         android:hint="@string/username"
         android:importantForAutofill="no"
@@ -21,9 +23,9 @@
 
     <EditText
         android:id="@+id/editTextEmail"
-        android:layout_width="379dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_margin="16dp"
         android:hint="@string/email"
         android:importantForAutofill="no"
         android:inputType="textEmailAddress"
@@ -33,7 +35,7 @@
 
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="379dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="@string/mot_de_passe"
