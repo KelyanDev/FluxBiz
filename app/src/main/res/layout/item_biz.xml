@@ -37,13 +37,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageViewProfile"
         android:layout_width="66dp"
         android:layout_height="66dp"
         android:contentDescription="@string/profile_picture"
         android:padding="10dp"
         android:scaleType="centerCrop"
+        android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/user_default" />
@@ -62,6 +63,25 @@
         app:layout_constraintStart_toStartOf="@+id/textViewBizContent"
         app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername"
         app:layout_constraintVertical_bias="0.0">
+
+        <ImageButton
+            android:id="@+id/buttonShare"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/like"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/rebiz_button" />
+
+        <TextView
+            android:id="@+id/share_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="0"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/buttonLike"
@@ -89,15 +109,6 @@
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/comment"
-            android:padding="2dp" />
-
-        <ImageButton
-            android:id="@+id/buttonShare"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/share"
             android:padding="2dp" />
 
     </LinearLayout>

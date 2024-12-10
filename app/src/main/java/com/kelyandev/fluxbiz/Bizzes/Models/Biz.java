@@ -14,6 +14,7 @@ public class Biz {
     private long time;
     private String username;
     private int likes;
+    private int rebizzes;
     private String userId;
     private double score;
 
@@ -30,14 +31,16 @@ public class Biz {
      * @param time The creation timestamp in milliseconds
      * @param username The username of the Biz's Author
      * @param likes The number of likes the Biz has
+     * @param rebizzes The number of Rebiz the Biz has
      * @param userId The user ID of the Biz's owner
      */
-    public Biz(String id, String content, long time, String username, int likes, String userId) {
+    public Biz(String id, String content, long time, String username, int likes, int rebizzes, String userId) {
         this.id = id;
         this.content = content;
         this.time = time;
         this.username = username;
         this.likes = likes;
+        this.rebizzes = rebizzes;
         this.userId = userId;
     }
 
@@ -122,6 +125,22 @@ public class Biz {
     }
 
     /**
+     * Gets the current number of rebizzes for the Biz
+     * @return The rebizzes count
+     */
+    public int getRebizzes() {
+        return rebizzes;
+    }
+
+    /**
+     * Sets a new rebiz count for the Biz
+     * @param rebizzes The new Biz count
+     */
+    public void setRebizzes(int rebizzes) {
+        this.rebizzes = rebizzes;
+    }
+
+    /**
      * Gets the user ID of the Biz's owner
      * @return The user ID of the Biz's owner
      */
@@ -150,6 +169,22 @@ public class Biz {
     public void decrementLikes() {
         if (likes > 0) {
             likes--;
+        }
+    }
+
+    /**
+     * Increments the rebiz count of the Biz by 1
+     */
+    public void incrementRebiz() {
+        rebizzes++;
+    }
+
+    /**
+     * Decrements the rebiz count of the Biz by 1, only if the rebiz count is greater than 0
+     */
+    public void decrementRebiz() {
+        if (rebizzes > 0) {
+            rebizzes--;
         }
     }
 

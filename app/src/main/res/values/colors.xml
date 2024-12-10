@@ -10,5 +10,7 @@
     <color name="my_dark_on_primary">#1B1B1F</color>
     <color name="my_dark_border">#AAB8C2</color>
 
+    <color name="share_color">#38A938</color>
+
     <color name="colorButtonDisabled">#F87217</color>
 </resources>

@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 String username = document.getString("username");
                 String userId = document.getString("userId");
 
-                Biz biz = new Biz(id, content, time, username, 0, userId);
+                Biz biz = new Biz(id, content, time, username, 0, 0, userId);
                 bizList.add(biz);
                 bizAdapter.notifyItemInserted(bizList.size() - 1);
             }
