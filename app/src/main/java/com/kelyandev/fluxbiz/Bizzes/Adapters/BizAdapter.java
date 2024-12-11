@@ -90,6 +90,10 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
 
         DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/").getReference("likesRef").child(biz.getId());
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        holder.buttonOptions.setOnClickListener(v -> showBottomSheetDialog(holder.itemView.getContext(), biz));
+
+        // Like state managing
         likesRef.child("userRefs").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -111,68 +115,83 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        holder.buttonLike.setOnClickListener(v -> {
+           boolean isLiked = !holder.buttonLike.isSelected();
+           holder.buttonLike.setSelected(isLiked);
 
-        holder.buttonOptions.setOnClickListener(v -> showBottomSheetDialog(holder.itemView.getContext(), biz));
+           if (isLiked) {
+               likesRef.child("userRefs").child(userId).setValue(true);
+               likesRef.child("likeCount").setValue(biz.getLikes() + 1);
 
-        holder.buttonLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isLiked = !holder.buttonLike.isSelected();
-                holder.buttonLike.setSelected(isLiked);
+               biz.incrementLikes();
+               holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
 
-                DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/").getReference("likesRef").child(biz.getId());
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+               int primaryColor = MaterialColors.getColor(holder.itemView, com.google.android.material.R.attr.colorPrimary);
+               holder.likeCountTextView.setTextColor(primaryColor);
 
-                if (isLiked) {
-                    likesRef.child("userRefs").child(userId).setValue(true);
-                    likesRef.child("likeCount").setValue(biz.getLikes() + 1);
+           } else {
+               likesRef.child("userRefs").child(userId).removeValue();
+               likesRef.child("likeCount").setValue(biz.getLikes() - 1);
 
-                    biz.incrementLikes();
-                    holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
+               biz.decrementLikes();
+               holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
 
-                    int primaryColor = MaterialColors.getColor(holder.itemView, com.google.android.material.R.attr.colorPrimary);
-                    holder.likeCountTextView.setTextColor(primaryColor);
-
-                } else {
-                    likesRef.child("userRefs").child(userId).removeValue();
-                    likesRef.child("likeCount").setValue(biz.getLikes() - 1);
-
-                    biz.decrementLikes();
-                    holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
-
-                    TypedValue typedValue = new TypedValue();
-                    holder.itemView.getContext().getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
-                    int defaultTextColor = holder.itemView.getContext().getResources().getColor(typedValue.resourceId, holder.itemView.getContext().getTheme());
-                    holder.likeCountTextView.setTextColor(defaultTextColor);
-                }
-            }
+               TypedValue typedValue = new TypedValue();
+               holder.itemView.getContext().getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+               int defaultTextColor = holder.itemView.getContext().getResources().getColor(typedValue.resourceId, holder.itemView.getContext().getTheme());
+               holder.likeCountTextView.setTextColor(defaultTextColor);
+           }
         });
 
-        holder.buttonRebiz.setOnClickListener(new View.OnClickListener() {
+        // Rebiz state managing
+        likesRef.child("rebizRefs").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                boolean isShared = !holder.buttonRebiz.isSelected();
-                holder.buttonRebiz.setSelected(isShared);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isRebizzed = snapshot.exists();
+                holder.buttonRebiz.setSelected(isRebizzed);
 
-                if (isShared) {
-                    biz.incrementRebiz();
-                    holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
-
+                if (isRebizzed) {
                     int shareColor = holder.itemView.getContext().getColor(R.color.share_color);
                     holder.shareCountTextView.setTextColor(shareColor);
-
                 } else {
-                    biz.decrementRebiz();
-                    holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
-
                     TypedValue typedValue = new TypedValue();
                     holder.itemView.getContext().getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
                     int defaultTextColor = holder.itemView.getContext().getResources().getColor(typedValue.resourceId, holder.itemView.getContext().getTheme());
                     holder.shareCountTextView.setTextColor(defaultTextColor);
                 }
             }
-        });
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        holder.buttonRebiz.setOnClickListener(v -> {
+            boolean isRebizzed = !holder.buttonRebiz.isSelected();
+            holder.buttonRebiz.setSelected(isRebizzed);
+
+            if (isRebizzed) {
+                likesRef.child("rebizRefs").child(userId).setValue(true);
+                likesRef.child("rebizCount").setValue(biz.getRebizzes() + 1);
+
+                biz.incrementRebiz();
+                holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
+
+                int shareColor = holder.itemView.getContext().getColor(R.color.share_color);
+                holder.shareCountTextView.setTextColor(shareColor);
+
+            } else {
+                likesRef.child("rebizRefs").child(userId).removeValue();
+                likesRef.child("rebizCount").setValue(biz.getRebizzes() - 1);
+
+                biz.decrementRebiz();
+                holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
+
+                TypedValue typedValue = new TypedValue();
+                holder.itemView.getContext().getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+                int defaultTextColor = holder.itemView.getContext().getResources().getColor(typedValue.resourceId, holder.itemView.getContext().getTheme());
+                holder.shareCountTextView.setTextColor(defaultTextColor);
+            }
+        });
     }
 
     /**
@@ -200,12 +219,12 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         public BizViewHolder(@NonNull View itemview) {
             super(itemview);
             buttonLike = itemview.findViewById(R.id.buttonLike);
-            buttonRebiz = itemview.findViewById(R.id.buttonShare);
+            buttonRebiz = itemview.findViewById(R.id.buttonRebiz);
             buttonOptions = itemview.findViewById(R.id.imageButtonOptions);
             contentTextView = itemview.findViewById(R.id.textViewBizContent);
             usernameTextView = itemview.findViewById(R.id.textViewBizUsername);
             likeCountTextView = itemview.findViewById(R.id.like_count);
-            shareCountTextView = itemview.findViewById(R.id.share_count);
+            shareCountTextView = itemview.findViewById(R.id.rebiz_count);
             timeTextView = itemview.findViewById(R.id.textViewBizTime);
             viewProfil = itemview.findViewById(R.id.imageViewProfile);
         }

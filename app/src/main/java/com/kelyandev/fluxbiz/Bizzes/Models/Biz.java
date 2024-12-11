@@ -199,17 +199,23 @@ public class Biz {
     /**
      * Calculates a score for the Biz, based on its age and like count
      * This is used to rank Bizzes by actuality over time
-     * @return A double representing the Biz's score
      */
     public void calculateScore() {
         long currentTime = System.currentTimeMillis();
         long ageInMillis = currentTime - time;
-        long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMillis);
+        //long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMillis);
 
-        double alpha = likes;
+        // Hyperparameters
+        double beta = 1.7; // Likes weight
+        double delta = 0.9; // Decreasing linked to age
 
-        this.score = (30 - ageInDays) * alpha;
-        //return (30 - ageInDays) * alpha;
+        // Calculating likes contribution
+        double popularity = Math.pow(likes, beta);
+
+        // Calculating penalty (related to age)
+        double agePenalty = Math.pow(ageInMillis / 1000.0, delta);
+
+        this.score = popularity / agePenalty;
     }
 
     /**

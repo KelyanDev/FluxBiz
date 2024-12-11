@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void refreshRecyclerViewData() {
         loadDataFromFirestore();
-        swiperefreshlayout.setRefreshing(false);
     }
 
     /**
@@ -235,9 +234,9 @@ public class MainActivity extends AppCompatActivity {
     private void loadRealtimeDatabaseLikes(boolean useCache) {
         AtomicInteger completedTasks = new AtomicInteger(0);
         for (Biz biz: bizList) {
-            DatabaseReference likesRef = rdb.getReference("likesRef").child(biz.getId());
+            DatabaseReference interactionRef = rdb.getReference("likesRef").child(biz.getId());
 
-            likesRef.child("likeCount").addListenerForSingleValueEvent(new ValueEventListener() {
+            interactionRef.child("likeCount").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
@@ -250,21 +249,34 @@ public class MainActivity extends AppCompatActivity {
 
                         bizAdapter.notifyDataSetChanged();
                         Log.w("Sorting process", "Biz list sorted correctly");
-
-                        swiperefreshlayout.setRefreshing(false);
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.w("Realtime Database", "Failed to read like count", error.toException());
-                    swiperefreshlayout.setRefreshing(false);
+                }
+            });
+
+            interactionRef.child("rebizCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        biz.setRebizzes(snapshot.getValue(Integer.class));
+                        bizAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
             });
 
             if (useCache) {
-                likesRef.keepSynced(true);
+                interactionRef.keepSynced(true);
             }
+            swiperefreshlayout.setRefreshing(false);
         }
     }
 
