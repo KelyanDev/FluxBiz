@@ -1,22 +1,11 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 <!--[![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url] -->
-
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -75,10 +64,16 @@
 ## About The Project
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/abea8858-3218-48db-8cb0-0cbf90c0ad47" alt="Login activity screenshot"> <!-- Login Activity-->
+  <img src="https://github.com/user-attachments/assets/1e6e09c1-7c70-4d02-b513-31b89056036d" alt="Login activity screenshot"> <!-- Main Activity-->
+  <img src="https://github.com/user-attachments/assets/3f084169-8c0f-4576-b479-71a36379bbee" alt="Login activity screenshot"> <!-- Profil Activity-->
+  <img src="https://github.com/user-attachments/assets/1c67001c-f208-430f-97a2-6ea7bca5e4cc" alt="Login activity screenshot"> <!-- Biz Creation Activity-->
+</div>
 
 <!-- Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `KelyanDev`, `FluxBiz`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
  -->
- 
+
 FluxBiz is an Android application designed as a practical tool to help users connect with people from around the world. It provides a user-friendly platform for anyone looking to meet and chat with others online, making it easier to connect with peoples.   
 
 With a clean, modern interface, the app is tailored to foster daily discoveries, creating a valuable experience for users in their personal lives.    
