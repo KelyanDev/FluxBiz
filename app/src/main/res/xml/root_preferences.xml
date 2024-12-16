@@ -16,7 +16,7 @@
             app:summary="Gérer la sécurité de votre compte et assurez le suivi de son utilisation, découvrez les options de gestion d'identifiants"/>
         <Preference
             app:key="notifications"
-            app:title="Notifications"
+            app:title="Notifications (WIP)"
             app:icon="@drawable/ic_notifications"
             app:summary="Gérer les paramètres liées aux notifications de l'application"/>
         <Preference

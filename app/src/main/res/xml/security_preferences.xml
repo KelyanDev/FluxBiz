@@ -22,12 +22,9 @@
             app:icon="@drawable/ic_connection"
             app:summary="Vérifiez les appareils connectés à votre compte (WIP)"/>
     </PreferenceCategory>
-    <PreferenceCategory
-        app:title="Suppression du compte">
         <Preference
             app:key="delAccount"
             app:title="Supprimer mon compte"
             android:layout="@layout/delaccount_button"/>
-    </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

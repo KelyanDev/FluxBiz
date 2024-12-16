@@ -206,16 +206,17 @@ public class Biz {
         //long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMillis);
 
         // Hyperparameters
-        double beta = 1.7; // Likes weight
-        double delta = 0.9; // Decreasing linked to age
+        double beta = 0.9; // Likes weight
+        double delta = 1.4; // Decreasing linked to age
+        double epsilon = 1e-6;
 
         // Calculating likes contribution
         double popularity = Math.pow(likes, beta);
 
         // Calculating penalty (related to age)
-        double agePenalty = Math.pow(ageInMillis / 1000.0, delta);
+        double agePenalty = Math.pow(ageInMillis / 1000.0, delta) + epsilon;
 
-        this.score = popularity / agePenalty;
+        setScore(popularity/agePenalty);
     }
 
     /**

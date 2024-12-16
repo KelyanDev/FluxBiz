@@ -7,6 +7,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.kelyandev.fluxbiz.R;
+import com.kelyandev.fluxbiz.Settings.Accessibility.AccessibilitySettingsFragment;
 import com.kelyandev.fluxbiz.Settings.Account.AccountSettingsFragment;
 import com.kelyandev.fluxbiz.Settings.Security.SecuritySettingsFragment;
 
@@ -18,6 +19,7 @@ public class RootSettingsFragment extends PreferenceFragmentCompat {
 
         Preference accountPreference = findPreference("account");
         Preference securityPreference = findPreference("security");
+        Preference accessibilityPreference = findPreference("accessibility");
 
         if (accountPreference != null) {
             accountPreference.setOnPreferenceClickListener(preference -> {
@@ -28,6 +30,12 @@ public class RootSettingsFragment extends PreferenceFragmentCompat {
         if (securityPreference != null) {
             securityPreference.setOnPreferenceClickListener(preference -> {
                 navigateToFragment(new SecuritySettingsFragment());
+                return true;
+            });
+        }
+        if (accessibilityPreference != null) {
+            accessibilityPreference.setOnPreferenceClickListener(preference -> {
+                navigateToFragment(new AccessibilitySettingsFragment());
                 return true;
             });
         }

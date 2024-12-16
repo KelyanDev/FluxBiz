@@ -35,4 +35,5 @@
     <string name="change_username">Changer de nom d\'utilisateur</string>
     <string name="verif">Vérifiez votre identité</string>
     <string name="change_password">Changer mon mot de passe</string>
+    <string name="accessibility">Accessibilité</string>
 </resources>
