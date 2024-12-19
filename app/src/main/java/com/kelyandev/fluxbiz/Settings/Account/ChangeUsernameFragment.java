@@ -2,6 +2,7 @@ package com.kelyandev.fluxbiz.Settings.Account;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
@@ -25,6 +28,8 @@ public class ChangeUsernameFragment extends Fragment {
 
     private FirebaseUser currentUser;
     private FirebaseFirestore firestore;
+    private FirebaseDatabase database;
+    private DatabaseReference usernameref;
     private Button buttonConfirm;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedinstance) {
@@ -33,6 +38,9 @@ public class ChangeUsernameFragment extends Fragment {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         firestore = FirebaseFirestore.getInstance();
+        database = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/");
+        usernameref = database.getReference("usernames");
+
 
         String currentUsername = currentUser.getDisplayName();
 
@@ -89,6 +97,7 @@ public class ChangeUsernameFragment extends Fragment {
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 updateBizMessages(userId, username, newUsername);
+                                updateRebizTab(userId, newUsername);
                             } else if (task.getException().getMessage().contains("PERMISSION_DENIED")) {
                                 Toast.makeText(getContext(), "Vous avez déjà mis à jour votre nom d'utilisateur récemment", Toast.LENGTH_SHORT).show();
                                 manageBizUpdateErrors(username);
@@ -157,5 +166,16 @@ public class ChangeUsernameFragment extends Fragment {
                 buttonConfirm.setEnabled(true);
             }
         });
+    }
+
+    /**
+     * Function to update the Realtime Database for username changes
+     * @param userId The user's ID
+     * @param username The new username
+     */
+    private void updateRebizTab(String userId, String username) {
+        usernameref.child(userId).setValue(username)
+                .addOnSuccessListener(aVoid -> Log.d("UpdateRealtimeDB", "Nom d'utilisateur mis à jour dans Realtime Database"))
+                .addOnFailureListener(e -> Log.e("UpdateRealtimeDB", "Erreur lors de la mise à jour: " + e.getMessage()));
     }
 }

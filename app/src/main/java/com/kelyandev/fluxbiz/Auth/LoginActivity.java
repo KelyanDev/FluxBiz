@@ -17,10 +17,16 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -32,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private TextView viewRegister, viewForgotten;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private DatabaseReference usernamerefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,9 @@ public class LoginActivity extends AppCompatActivity {
         viewForgotten = findViewById(R.id.textViewForgottenPassword);
         loginButton = findViewById(R.id.buttonLogin);
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        usernamerefs = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/")
+                        .getReference("usernames");
 
         viewRegister.setOnClickListener( view -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
@@ -64,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Function to log in an existing user in FluzBiz
+     * Logs in an existing user in FluzBiz
      */
     private void loginUser() {
         String email = editTextEmail.getText().toString().trim();
@@ -85,28 +96,74 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
-                if (user != null) {
-                    if (user.isEmailVerified()) {
-                        Toast.makeText(this, "Connexion réussie", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Votre email n'est pas vérifiée", Toast.LENGTH_LONG).show();
-                        mAuth.signOut();
-                        user.sendEmailVerification();
-                        loginButton.setEnabled(true);
-                    }
-                }
-            } else {
-                loginButton.setEnabled(true);
-                if (task.getException() instanceof FirebaseAuthInvalidUserException) {
-                    Toast.makeText(this, "Ce compte n'existe pas.", Toast.LENGTH_SHORT).show();
-                } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                    Toast.makeText(this,"Identifiant ou mot de passe incorrect(s). Réessayez", Toast.LENGTH_SHORT).show();
+                if (user != null && user.isEmailVerified()) {
+                    usernamerefs.child(user.getUid()).get().addOnCompleteListener(usernameTask -> {
+                        if (usernameTask.isSuccessful() && usernameTask.getResult().exists()) {
+                            proceedToMainActivity();
+                        } else {
+                            handleFirstLogin(user);
+                        }
+                    });
+                } else if (user != null) {
+                    Toast.makeText(this, "Votre email n'est pas vérifiée", Toast.LENGTH_LONG).show();
+                    mAuth.signOut();
+                    user.sendEmailVerification();
+                    loginButton.setEnabled(true);
                 } else {
-                    Toast.makeText(this,"Erreur: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    loginButton.setEnabled(true);
+                    if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                        Toast.makeText(this, "Ce compte n'existe pas.", Toast.LENGTH_SHORT).show();
+                    } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                        Toast.makeText(this, "Identifiant ou mot de passe incorrect(s). Réessayez", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Erreur: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
+    }
+
+    /**
+     * Handle the first login for the user, updating their username in RealtimeDatabase and Firestore
+     * @param user The authenticated user
+     */
+    private void handleFirstLogin(FirebaseUser user) {
+        String userId = user.getUid();
+        String username = user.getDisplayName();
+
+        if (TextUtils.isEmpty(username)) {
+            Toast.makeText(this, "Aucun nom d'utilisateur trouvé pour ce compte.", Toast.LENGTH_SHORT).show();
+            loginButton.setEnabled(true);
+            return;
+        }
+
+        usernamerefs.child(userId).setValue(username).addOnCompleteListener(rtTask -> {
+            if (rtTask.isSuccessful()) {
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("lastUsernameChange", com.google.firebase.Timestamp.now());
+
+                db.collection("users").document(userId).set(userMap)
+                        .addOnCompleteListener(fsTask -> {
+                            if (fsTask.isSuccessful()) {
+                                proceedToMainActivity();
+                            } else {
+                                Toast.makeText(this, "Erreur lors de l'enregistrement dans Firestore", Toast.LENGTH_SHORT).show();
+                                loginButton.setEnabled(true);
+                            }
+                        });
+            } else {
+                Toast.makeText(this, "Erreur lors de l'enregistrement dans Firestore", Toast.LENGTH_SHORT).show();
+                loginButton.setEnabled(true);
+            }
+        });
+    }
+
+    /**
+     * Proceed to main activity after successful login
+     */
+    private void proceedToMainActivity() {
+        Toast.makeText(this, "Connexion réussie", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
     }
 }

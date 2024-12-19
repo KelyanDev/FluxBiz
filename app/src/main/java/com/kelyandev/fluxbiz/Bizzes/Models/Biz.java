@@ -203,7 +203,6 @@ public class Biz {
     public void calculateScore() {
         long currentTime = System.currentTimeMillis();
         long ageInMillis = currentTime - time;
-        //long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMillis);
 
         // Hyperparameters
         double beta = 0.9; // Likes weight

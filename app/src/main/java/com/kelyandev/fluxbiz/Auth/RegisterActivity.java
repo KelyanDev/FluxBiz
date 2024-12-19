@@ -16,8 +16,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
 import android.widget.Toast;
@@ -31,7 +29,6 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerButton;
     private TextView viewLogin;
     private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.buttonRegister);
 
         mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
 
         viewLogin.setOnClickListener( view -> {
             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
@@ -114,7 +110,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                     user.updateProfile(profileUpdates).addOnCompleteListener(profileTask -> {
                         if (profileTask.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Votre compte a bien été créé.", Toast.LENGTH_SHORT).show();
                             mAuth.signOut();
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             finish();

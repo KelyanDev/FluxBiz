@@ -7,6 +7,31 @@
     android:background="@drawable/block_border"
     android:padding="6dp">
 
+    <LinearLayout
+        android:id="@+id/Rebized"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="26dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/imageViewRebiz"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/rebiz_button"/>
+
+        <TextView
+            android:id="@+id/textViewRebiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rebized by"
+            android:textSize="14sp"
+            android:layout_marginStart="4dp"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textViewBizUsername"
@@ -18,7 +43,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textViewBizContent"
         app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Rebized"
         app:layout_constraintVertical_bias="0.8" />
 
     <TextView
@@ -34,7 +59,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toEndOf="@+id/textViewBizUsername"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Rebized"
         tools:ignore="HardcodedText" />
 
     <ImageButton
@@ -46,7 +71,7 @@
         android:scaleType="centerCrop"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Rebized"
         app:srcCompat="@drawable/user_default" />
 
     <LinearLayout
@@ -136,7 +161,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toTopOf="@+id/textViewBizContent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewRebiz"
         app:srcCompat="@drawable/ic_moreoptions"
         tools:ignore="HardcodedText"/>
 
