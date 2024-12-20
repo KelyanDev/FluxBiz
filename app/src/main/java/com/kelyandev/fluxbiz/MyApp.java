@@ -10,6 +10,10 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.MemoryCacheSettings;
+import com.google.firebase.firestore.PersistentCacheSettings;
 
 public class MyApp extends Application {
     @Override
@@ -22,6 +26,14 @@ public class MyApp extends Application {
                 PlayIntegrityAppCheckProviderFactory.getInstance());
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
+                .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
+                .build();
+
+        firestore.setFirestoreSettings(settings);
 
         manageTheme();
     }

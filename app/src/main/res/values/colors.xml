@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Primary colors -->
     <color name="my_light_primary">#F87217</color>
     <color name="my_light_primary_variant">#3700B3</color>
     <color name="my_light_on_primary">#FFFFFF</color>
-    <color name="my_light_border">#AAB8C2</color>
 
+    <!-- Dark mode primary -->
     <color name="my_dark_primary">#F87217</color>
     <color name="my_dark_primary_variant">#3700B3</color>
     <color name="my_dark_on_primary">#1B1B1F</color>
-    <color name="my_dark_border">#AAB8C2</color>
 
+    <!-- Borders and outlines -->
+    <color name="my_light_border">#AAB8C2</color>
+    <color name="my_dark_border">#2F3336</color>
+
+    <!-- Surface colors -->
+    <color name="my_light_surface">#FFFFFF</color>
+    <color name="my_dark_surface">#121212</color>
+
+    <color name="my_light_on_surface">#1B1B1F</color>
+    <color name="my_dark_on_surface">#EAEAEA</color>
+
+    <!-- Secondary colors -->
     <color name="share_color">#38A938</color>
-
     <color name="colorButtonDisabled">#F87217</color>
+
+    <!-- Accent color -->
+
+
 </resources>

@@ -133,13 +133,6 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         rdb = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/");
 
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
-                .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
-                        .build();
-
-        db.setFirestoreSettings(settings);
-
         loadDataFromCache();
 
         // Create Biz Button
@@ -238,45 +231,47 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadRealtimeDatabaseLikes(boolean useCache) {
         AtomicInteger completedTasks = new AtomicInteger(0);
+        AtomicInteger totalTasks = new AtomicInteger(bizList.size() * 2);
+
         for (Biz biz: bizList) {
             DatabaseReference interactionRef = rdb.getReference("likesRef").child(biz.getId());
 
-            interactionRef.child("likeCount").addListenerForSingleValueEvent(new ValueEventListener() {
+            ValueEventListener likeListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         biz.setLikes(snapshot.getValue(Integer.class));
-                        biz.calculateScore();
                     }
-
-                    if (completedTasks.incrementAndGet() == bizList.size()) {
-                        bizList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
-
-                        bizAdapter.notifyDataSetChanged();
-                        Log.w("Sorting process", "Biz list sorted correctly");
+                    if (completedTasks.incrementAndGet() == totalTasks.get()) {
+                        finalizeBizListUpdate();
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Log.w("Realtime Database", "Failed to read like count", error.toException());
+                    Log.w("RealtimeDatabase", "Failed to read like count", error.toException());
                 }
-            });
+            };
 
-            interactionRef.child("rebizCount").addListenerForSingleValueEvent(new ValueEventListener() {
+            ValueEventListener rebizListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         biz.setRebizzes(snapshot.getValue(Integer.class));
-                        bizAdapter.notifyDataSetChanged();
+                    }
+                    if (completedTasks.incrementAndGet() == totalTasks.get()) {
+                        finalizeBizListUpdate();
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Log.w("RealtimeDatabase", "Failed to read rebiz count", error.toException());
                 }
-            });
+            };
+
+            interactionRef.child("likeCount").addListenerForSingleValueEvent(likeListener);
+            interactionRef.child("rebizCount").addListenerForSingleValueEvent(rebizListener);
 
             if (useCache) {
                 interactionRef.keepSynced(true);
@@ -311,6 +306,17 @@ public class MainActivity extends AppCompatActivity {
                 bizAdapter.notifyItemInserted(bizList.size() - 1);
             }
         }
+    }
+
+    /**
+     * Finalize the update process: calculate scores, sort the list, and notify the adapter
+     */
+    private void finalizeBizListUpdate() {
+        for (Biz biz: bizList) {
+            biz.calculateScore();
+        }
+        bizList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
+        bizAdapter.notifyDataSetChanged();
     }
 
     /**

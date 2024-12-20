@@ -1,15 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.Theme.FluxBiz" parent="Theme.Material3.DayNight.NoActionBar">
-
+        <!-- Primary colors for dark mode -->
         <item name="colorPrimary">@color/my_dark_primary</item>
         <item name="colorPrimaryVariant">@color/my_dark_primary_variant</item>
         <item name="colorOnPrimary">@color/my_dark_on_primary</item>
-        <item name="colorOutline">@color/my_dark_border</item>
+
+        <!-- Surface and text colors -->
+        <item name="colorSurface">@color/my_dark_surface</item>
         <item name="colorOnSurface">@color/colorButtonDisabled</item>
+        <item name="colorOutline">@color/my_dark_border</item>
+
+        <!-- Background colors -->
         <item name="colorBackgroundFloating">@color/my_dark_on_primary</item>
         <item name="android:colorBackgroundFloating">@color/my_dark_on_primary</item>
 
+        <!-- Status bar and system UI -->
         <item name="android:statusBarColor">@color/my_dark_on_primary</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="materialButtonOutlinedStyle">@style/CustomOutlinedButtonStyle</item>

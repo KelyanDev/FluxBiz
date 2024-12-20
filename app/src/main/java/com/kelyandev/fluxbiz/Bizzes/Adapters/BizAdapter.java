@@ -82,6 +82,8 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
         holder.timeTextView.setText(biz.getFormattedDate());
 
+        holder.rebizedLayout.setVisibility(View.GONE);
+
         updateRebizInfo(biz, holder.rebizedLayout, holder.textViewRebized);
 
         holder.viewProfil.setOnClickListener(v -> {
