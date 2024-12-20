@@ -1,5 +1,6 @@
 package com.kelyandev.fluxbiz.Bizzes.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.ProfilActivity;
 import com.kelyandev.fluxbiz.R;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -79,6 +81,8 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
         holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
         holder.timeTextView.setText(biz.getFormattedDate());
+
+        updateRebizInfo(biz, holder.rebizedLayout, holder.textViewRebized);
 
         holder.viewProfil.setOnClickListener(v -> {
             Context context = holder.viewProfil.getContext();
@@ -208,8 +212,9 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
      * ViewHolder class for Biz, holding references to each UI element
      */
     public static class BizViewHolder extends RecyclerView.ViewHolder {
-        TextView contentTextView, usernameTextView, likeCountTextView, timeTextView, shareCountTextView;
+        TextView contentTextView, usernameTextView, likeCountTextView, timeTextView, shareCountTextView, textViewRebized;
         public ImageButton buttonLike, buttonOptions, viewProfil, buttonRebiz;
+        LinearLayout rebizedLayout;
 
 
         /**
@@ -227,6 +232,9 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
             shareCountTextView = itemview.findViewById(R.id.rebiz_count);
             timeTextView = itemview.findViewById(R.id.textViewBizTime);
             viewProfil = itemview.findViewById(R.id.imageViewProfile);
+
+            textViewRebized = itemview.findViewById(R.id.textViewRebiz);
+            rebizedLayout = itemview.findViewById(R.id.Rebized);
         }
     }
 
@@ -279,5 +287,79 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
                             notifyDataSetChanged();
                         }).addOnFailureListener(e -> Log.w("Biz deletion", "Error deleting biz from Database"));
                 }).addOnFailureListener(e -> Log.w("Biz Deletion", "Error deleting biz from Firestore", e));
+    }
+
+    /**
+     * Update the Rebiz status of a Biz
+     * @param biz The biz
+     * @param rebizedLayout The Biz rebized layout
+     * @param textViewRebiz The Biz textView for Rebizzes
+     */
+    @SuppressLint("SetTextI18n")
+    private void updateRebizInfo(Biz biz, LinearLayout rebizedLayout, TextView textViewRebiz) {
+        DatabaseReference rebizRefs = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("likesRef")
+                .child(biz.getId())
+                .child("rebizRefs");
+
+        rebizRefs.limitToFirst(2).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                DataSnapshot snapshot = task.getResult();
+                long rebizCount = biz.getRebizzes();
+
+                if (rebizCount == 0) {
+                    rebizedLayout.setVisibility(View.GONE);
+                    return;
+                }
+
+                Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
+                if (rebizCount == 1 && iterator.hasNext()) {
+                    String userId = iterator.next().getKey();
+                    fetchUsername(userId, username -> textViewRebiz.setText(username + " a reposté"));
+                } else if (rebizCount == 2 && iterator.hasNext()) {
+                    String firstUserId = iterator.next().getKey();
+                    String secondUserId = iterator.hasNext() ? iterator.next().getKey() : null;
+
+                    if (secondUserId != null) {
+                        fetchUsername(firstUserId, firstUsername ->
+                            fetchUsername(secondUserId, secondUsername ->
+                                    textViewRebiz.setText(firstUsername + " et " + secondUsername + " ont reposté")
+                            )
+                        );
+                    }
+                } else {
+                    textViewRebiz.setText("Plusieurs utilisateurs ont reposté");
+                }
+
+                rebizedLayout.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    /**
+     * Function to recover the username using the user's Id
+     * @param userId The user's Id
+     * @param callback The callback to manage the username
+     */
+    private void fetchUsername(String userId, OnUsernameFetched callback) {
+        DatabaseReference usernameRefs = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("usernames")
+                .child(userId);
+
+        usernameRefs.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                String username = task.getResult().getValue(String.class);
+                callback.onUsernameFetched(username);
+            } else {
+                callback.onUsernameFetched("Utilisateur inconnu");
+            }
+        });
+    }
+
+    /**
+     * Interface to manage the callback once the username is recovered
+     */
+    private interface OnUsernameFetched {
+        void onUsernameFetched(String username);
     }
 }

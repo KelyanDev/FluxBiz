@@ -27,6 +27,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.content.Intent;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -53,6 +54,7 @@ import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.Settings.SettingsActivity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -402,6 +404,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-
 
 }

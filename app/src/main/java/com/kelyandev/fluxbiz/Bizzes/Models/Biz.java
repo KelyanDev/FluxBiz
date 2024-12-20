@@ -188,10 +188,18 @@ public class Biz {
         }
     }
 
+    /**
+     * Get the Biz score
+     * @return The biz score
+     */
     public double getScore() {
         return score;
     }
 
+    /**
+     * Set the Biz score
+     * @param score The new Biz score
+     */
     public void setScore(double score) {
         this.score = score;
     }
@@ -206,11 +214,16 @@ public class Biz {
 
         // Hyperparameters
         double beta = 0.9; // Likes weight
+        double alpha = 1.2; // Rebizzes weight
         double delta = 1.4; // Decreasing linked to age
         double epsilon = 1e-6;
 
-        // Calculating likes contribution
-        double popularity = Math.pow(likes, beta);
+        // Calculating likes and rebizzes contribution
+        double likesContribution = Math.pow(likes, beta);
+        double rebizzesContribution = Math.pow(rebizzes, alpha);
+
+        // Total popularity score
+        double popularity = likesContribution + rebizzesContribution;
 
         // Calculating penalty (related to age)
         double agePenalty = Math.pow(ageInMillis / 1000.0, delta) + epsilon;
