@@ -51,8 +51,8 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
+    <!--<li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>-->
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -195,6 +195,7 @@ Project Link: [https://github.com/KelyanDev/FluxBiz](https://github.com/KelyanDe
 
 * [Firebase Documentation](https://firebase.google.com/docs)
 * [Android Development Documentations](https://developer.android.com/develop)
+* [Twitter UI Screen (figma)](https://www.figma.com/design/PRfjPuuzAXYc3eQWx9KMlr/Twitter-UI-Screens-(Community)?node-id=4-1224&p=f&t=VcyvTjw6kGAHEOSD-0)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
