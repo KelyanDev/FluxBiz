@@ -46,8 +46,13 @@
             android:label="Reset Password">
         </activity>
         <activity
-            android:name=".CreateBizActivity"
+            android:name=".Bizzes.CreateBizActivity"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
             android:label="Create Biz">
+        </activity>
+        <activity android:name=".Bizzes.CommentBizActivity"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
+            android:label="Comment Biz">
         </activity>
         <activity android:name=".Settings.SettingsActivity"
             android:label="Settings">

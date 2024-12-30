@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kelyandev.fluxbiz.Bizzes.CommentBizActivity;
 import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.ProfilActivity;
 import com.kelyandev.fluxbiz.R;
@@ -91,6 +92,14 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
             Intent intent = new Intent(context, ProfilActivity.class);
             intent.putExtra("userId", biz.getUserId());
             intent.putExtra("username", biz.getUsername());
+            context.startActivity(intent);
+        });
+
+        holder.buttonComment.setOnClickListener(v -> {
+            Context context = holder.buttonComment.getContext();
+            Intent intent = new Intent(context, CommentBizActivity.class);
+            intent.putExtra("bizUsername", biz.getUsername());
+            intent.putExtra("bizContent", biz.getContent());
             context.startActivity(intent);
         });
 
@@ -215,7 +224,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
      */
     public static class BizViewHolder extends RecyclerView.ViewHolder {
         TextView contentTextView, usernameTextView, likeCountTextView, timeTextView, shareCountTextView, textViewRebized;
-        public ImageButton buttonLike, buttonOptions, viewProfil, buttonRebiz;
+        public ImageButton buttonLike, buttonOptions, viewProfil, buttonRebiz, buttonComment;
         LinearLayout rebizedLayout;
 
 
@@ -227,6 +236,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
             super(itemview);
             buttonLike = itemview.findViewById(R.id.buttonLike);
             buttonRebiz = itemview.findViewById(R.id.buttonRebiz);
+            buttonComment = itemview.findViewById(R.id.buttonComment);
             buttonOptions = itemview.findViewById(R.id.imageButtonOptions);
             contentTextView = itemview.findViewById(R.id.textViewBizContent);
             usernameTextView = itemview.findViewById(R.id.textViewBizUsername);

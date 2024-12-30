@@ -28,7 +28,7 @@
             android:id="@+id/textViewRebiz"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rebized by"
+            android:text="Reposté"
             android:textSize="14sp"
             android:layout_marginStart="4dp"/>
 
@@ -91,6 +91,25 @@
         app:layout_constraintVertical_bias="0.0">
 
         <ImageButton
+            android:id="@+id/buttonComment"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/comment"
+            android:padding="2dp"
+            android:src="@drawable/chat_bubble_24px"/>
+
+        <TextView
+            android:id="@+id/comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_horizontal"
+            android:text="0"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
             android:id="@+id/buttonRebiz"
             android:layout_width="34dp"
             android:layout_height="34dp"
@@ -104,7 +123,7 @@
             android:id="@+id/rebiz_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             android:gravity="center_horizontal"
             android:text="0"
             android:textSize="14sp"
@@ -128,15 +147,6 @@
             android:text="0"
             android:textSize="14sp"
             tools:ignore="HardcodedText" />
-
-        <ImageButton
-            android:id="@+id/buttonComment"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/comment"
-            android:padding="2dp" />
 
     </LinearLayout>
 
@@ -162,7 +172,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toTopOf="@+id/textViewBizContent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewRebiz"
+        app:layout_constraintTop_toBottomOf="@id/Rebized"
         app:srcCompat="@drawable/ic_moreoptions"
         tools:ignore="HardcodedText"/>
 

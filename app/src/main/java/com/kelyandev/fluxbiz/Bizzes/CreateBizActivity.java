@@ -1,11 +1,15 @@
-package com.kelyandev.fluxbiz;
+package com.kelyandev.fluxbiz.Bizzes;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kelyandev.fluxbiz.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +36,7 @@ import java.util.Map;
 public class CreateBizActivity extends AppCompatActivity {
 
     private EditText bizContent;
-    private TextView cancel;
+    private ImageButton cancel;
     private Button buttonSend;
     private FirebaseAuth auth;
     private FirebaseFirestore db;
@@ -54,7 +59,22 @@ public class CreateBizActivity extends AppCompatActivity {
 
         bizContent = findViewById(R.id.editTextBizContent);
         buttonSend = findViewById(R.id.buttonSendBiz);
-        cancel = findViewById(R.id.textViewCancel);
+        cancel = findViewById(R.id.buttonCancel);
+
+        // Force the Keyboard to appear on the initial load of the activity
+        bizContent.requestFocus();
+        bizContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (bizContent.hasFocus()) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.showSoftInput(bizContent, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                    bizContent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
 
         buttonSend.setEnabled(false);
 
@@ -74,7 +94,6 @@ public class CreateBizActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
 

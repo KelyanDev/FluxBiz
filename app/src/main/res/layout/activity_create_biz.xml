@@ -4,59 +4,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/TopBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/block_border"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/buttonCancel"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close" />
+
+        <Button
+            android:id="@+id/buttonSendBiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_alignParentEnd="true"
+            android:text="Poster" />
+
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/editTextBizContent"
         android:layout_width="322dp"
         android:layout_height="295dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="22dp"
         android:gravity="top|start"
         android:hint="@string/biz_hint"
-        android:inputType="textMultiLine"
+        android:inputType="textMultiLine|textCapSentences"
         android:lines="8"
         android:scrollHorizontally="false"
         android:singleLine="false"
         android:background="@android:color/transparent"
         android:maxLength="300"
+        android:textCursorDrawable="@drawable/custom_cursor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/buttonSendBiz"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        android:text="@string/biz"
-        app:layout_constraintBottom_toTopOf="@+id/editTextBizContent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewCancel"
-        android:layout_width="67dp"
-        android:layout_height="34dp"
-        android:gravity="center"
-        android:layout_marginStart="10dp"
-        android:text="@string/cancel"
-        android:textColor="@color/my_light_primary"
-        app:layout_constraintBottom_toTopOf="@+id/imageView4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/imageView4"
+        app:layout_constraintTop_toBottomOf="@id/TopBar" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="14dp"
         android:layout_marginStart="10dp"
         android:contentDescription="@string/user_logo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TopBar"
         app:srcCompat="@drawable/user_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

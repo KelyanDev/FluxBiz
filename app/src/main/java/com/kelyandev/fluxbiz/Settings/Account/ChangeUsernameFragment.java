@@ -59,8 +59,13 @@ public class ChangeUsernameFragment extends Fragment {
             String username = newUsername.getText().toString().trim();
             buttonConfirm.setEnabled(false);
 
+            if (username.contains(" ")) {
+                newUsername.setError("Le nom d'utilisateur ne doit pas contenir d'espaces");
+                buttonConfirm.setEnabled(true);
+                return;
+            }
             if (TextUtils.isEmpty(username)) {
-                Toast.makeText(getContext(), "Veuillez entrer un nouveau nom d'utilisateur", Toast.LENGTH_SHORT).show();
+                newUsername.setError("Veuillez entrer un nouveau nom d'utilisateur");
                 buttonConfirm.setEnabled(true);
                 return;
             }

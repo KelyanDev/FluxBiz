@@ -66,6 +66,11 @@ public class RegisterActivity extends AppCompatActivity {
         String password = editTextPassword.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
 
+        if (username.contains(" ")) {
+            editTextUsername.setError("Le nom d'utilisateur ne doit pas contenir d'espaces");
+            registerButton.setEnabled(true);
+            return;
+        }
         if (TextUtils.isEmpty(email)) {
             editTextEmail.setError("Votre email est requise");
             registerButton.setEnabled(true);
