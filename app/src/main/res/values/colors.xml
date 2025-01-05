@@ -24,6 +24,8 @@
     <!-- Secondary colors -->
     <color name="share_color">#38A938</color>
     <color name="colorButtonDisabled">#F87217</color>
+    <color name="my_light_secondary_text">#888888</color>
+    <color name="my_dark_secondary_text">#A0A0A0</color>
 
     <!-- Accent color -->
 

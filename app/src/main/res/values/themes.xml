@@ -10,6 +10,7 @@
         <item name="colorSurface">@color/my_light_surface</item>
         <item name="colorOnSurface">@color/colorButtonDisabled</item>
         <item name="colorOutline">@color/my_light_border</item>
+        <item name="colorOnSecondary">@color/my_light_secondary_text</item>
 
         <!-- Status bar and system UI -->
         <item name="android:statusBarColor">@color/my_light_on_primary</item>

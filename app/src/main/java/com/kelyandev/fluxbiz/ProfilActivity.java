@@ -100,6 +100,7 @@ public class ProfilActivity extends AppCompatActivity {
     private void loadUserDataFromFirestore(String userId) {
         db.collection("bizs")
                 .whereEqualTo("userId", userId)
+                .whereEqualTo("isDeleted", false)
                 .orderBy("time", Query.Direction.DESCENDING)
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
                     if (e != null) {
@@ -117,7 +118,7 @@ public class ProfilActivity extends AppCompatActivity {
                             long time = document.getLong("time");
                             String username = document.getString("username");
 
-                            Biz biz = new Biz(id, content, time, username, 0, 0, userId);
+                            Biz biz = new Biz(id, content, time, username, 0, 0, 0, userId);
                             bizList.add(biz);
 
                             DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/")

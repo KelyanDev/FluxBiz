@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         swiperefreshlayout.setRefreshing(true);
 
         db.collection("bizs")
+                .whereEqualTo("isDeleted", false)
                 .orderBy("time", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -220,11 +221,11 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Function to load data from RealtimeDatabase
-     * @param useCache Is the data gonna use the cache or not
+     * @param useCache Is the data loaded from cache. If not, data will keep sync with database
      */
     private void loadRealtimeDatabaseLikes(boolean useCache) {
         AtomicInteger completedTasks = new AtomicInteger(0);
-        AtomicInteger totalTasks = new AtomicInteger(bizList.size() * 2);
+        AtomicInteger totalTasks = new AtomicInteger(bizList.size() * 3);
 
         for (Biz biz: bizList) {
             DatabaseReference interactionRef = rdb.getReference("likesRef").child(biz.getId());
@@ -236,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                         biz.setLikes(snapshot.getValue(Integer.class));
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
-                        finalizeBizListUpdate();
+                        finalizeBizListUpdate(true);
                     }
                 }
 
@@ -253,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                         biz.setRebizzes(snapshot.getValue(Integer.class));
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
-                        finalizeBizListUpdate();
+                        finalizeBizListUpdate(true);
                     }
                 }
 
@@ -263,10 +264,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
+            ValueEventListener replyListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        biz.setReplies(snapshot.getValue(Integer.class));
+                    }
+                    if (completedTasks.incrementAndGet() == totalTasks.get()) {
+                        finalizeBizListUpdate(false);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.w("RealtimeDatabase", "Failed to read like count", error.toException());
+                }
+            };
+
             interactionRef.child("likeCount").addListenerForSingleValueEvent(likeListener);
             interactionRef.child("rebizCount").addListenerForSingleValueEvent(rebizListener);
+            interactionRef.child("replyCount").addListenerForSingleValueEvent(replyListener);
 
-            if (useCache) {
+            if (!useCache) {
                 interactionRef.keepSynced(true);
             }
             swiperefreshlayout.setRefreshing(false);
@@ -294,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                 String username = document.getString("username");
                 String userId = document.getString("userId");
 
-                Biz biz = new Biz(id, content, time, username, 0, 0, userId);
+                Biz biz = new Biz(id, content, time, username, 0, 0, 0, userId);
                 bizList.add(biz);
                 bizAdapter.notifyItemInserted(bizList.size() - 1);
             }
@@ -303,12 +322,15 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Finalize the update process: calculate scores, sort the list, and notify the adapter
+     * @param updateScore Should the Bizzes recalculate their score
      */
-    private void finalizeBizListUpdate() {
-        for (Biz biz: bizList) {
-            biz.calculateScore();
+    private void finalizeBizListUpdate(Boolean updateScore) {
+        if (updateScore) {
+            for (Biz biz: bizList) {
+                biz.calculateScore();
+            }
+            bizList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
         }
-        bizList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
         bizAdapter.notifyDataSetChanged();
     }
 

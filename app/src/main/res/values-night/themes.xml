@@ -10,6 +10,7 @@
         <item name="colorSurface">@color/my_dark_surface</item>
         <item name="colorOnSurface">@color/colorButtonDisabled</item>
         <item name="colorOutline">@color/my_dark_border</item>
+        <item name="colorOnSecondary">@color/my_dark_secondary_text</item>
 
         <!-- Background colors -->
         <item name="colorBackgroundFloating">@color/my_dark_on_primary</item>

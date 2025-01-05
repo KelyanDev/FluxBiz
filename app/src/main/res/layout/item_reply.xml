@@ -7,68 +7,41 @@
     android:background="@drawable/block_border"
     android:padding="6dp">
 
-    <LinearLayout
-        android:id="@+id/Rebized"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="26dp"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/imageViewRebiz"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/rebiz_button"/>
-
-        <TextView
-            android:id="@+id/textViewRebiz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reposté"
-            android:textSize="14sp"
-            android:textColor="?attr/colorOnSecondary"
-            android:textStyle="bold"
-            android:layout_marginStart="4dp"/>
-
-    </LinearLayout>
-
     <TextView
-        android:id="@+id/textViewBizUsername"
+        android:id="@+id/ReplyAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="top|start"
         android:text="@string/username"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginStart="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewBizContent"
-        app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
-        app:layout_constraintTop_toBottomOf="@id/Rebized"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintStart_toEndOf="@+id/ReplyAuthorProfile"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewBizTime"
+        android:id="@+id/ReplyTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
         android:layout_marginBottom="7dp"
         android:gravity="start|bottom"
         android:text="Date"
-        android:textColor="?attr/colorOnSecondary"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewBizContent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toEndOf="@+id/textViewBizUsername"
-        app:layout_constraintTop_toBottomOf="@id/Rebized"
+        android:layout_marginStart="10dp"
+        android:textColor="?attr/colorOnSecondary"
+        app:layout_constraintStart_toEndOf="@+id/ReplyAuthor"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
+    <TextView
+        android:id="@+id/ReplyMention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="En réponse à"
+        app:layout_constraintTop_toBottomOf="@id/ReplyAuthor"
+        app:layout_constraintStart_toEndOf="@id/ReplyAuthorProfile"/>
+
     <ImageButton
-        android:id="@+id/imageViewProfile"
+        android:id="@+id/ReplyAuthorProfile"
         android:layout_width="66dp"
         android:layout_height="66dp"
         android:contentDescription="@string/profile_picture"
@@ -76,7 +49,7 @@
         android:scaleType="centerCrop"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Rebized"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/user_default" />
 
     <LinearLayout
@@ -86,12 +59,12 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="0dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textViewBizContent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBizContent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintStart_toStartOf="@id/ReplyContent"
+        app:layout_constraintTop_toBottomOf="@id/ReplyContent">
 
         <ImageButton
             android:id="@+id/buttonComment"
@@ -155,18 +128,18 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textViewBizContent"
+        android:id="@+id/ReplyContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:scrollHorizontally="false"
         android:singleLine="false"
         android:text="@string/content"
         android:textSize="15sp"
+        android:layout_marginTop="2dp"
         app:layout_constraintBottom_toTopOf="@+id/interaction_buttons"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageViewProfile"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBizUsername" />
+        app:layout_constraintStart_toEndOf="@+id/ReplyAuthorProfile"
+        app:layout_constraintTop_toBottomOf="@+id/ReplyMention" />
 
     <ImageButton
         android:id="@+id/imageButtonOptions"
@@ -176,7 +149,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toTopOf="@+id/textViewBizContent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Rebized"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_moreoptions"
         tools:ignore="HardcodedText"/>
 

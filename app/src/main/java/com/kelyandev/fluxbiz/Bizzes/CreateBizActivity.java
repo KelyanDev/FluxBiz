@@ -9,8 +9,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -134,6 +132,7 @@ public class CreateBizActivity extends AppCompatActivity {
             biz.put("time",System.currentTimeMillis());
             biz.put("username", currentUsername);
             biz.put("userId", currentUser.getUid());
+            biz.put("isDeleted", false);
 
             db.collection("bizs")
                     .add(biz)
@@ -145,6 +144,8 @@ public class CreateBizActivity extends AppCompatActivity {
                         Map<String, Object> likeData = new HashMap<>();
                         likeData.put("likeCount", 0);
                         likeData.put("userRef", new HashMap<String, Boolean>());
+                        likeData.put("rebizCount", 0);
+                        likeData.put("replyCount", 0);
 
                         likesRef.setValue(likeData).addOnSuccessListener(aVoid -> {
                             Toast.makeText(CreateBizActivity.this,"Biz envoyé", Toast.LENGTH_SHORT).show();

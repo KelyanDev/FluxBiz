@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -23,15 +22,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.kelyandev.fluxbiz.BizConversationActivity;
 import com.kelyandev.fluxbiz.Bizzes.CommentBizActivity;
 import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.ProfilActivity;
 import com.kelyandev.fluxbiz.R;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adapter to manage and display the Biz list in a RecyclerView
@@ -78,38 +82,52 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         Biz biz = bizList.get(position);
 
         holder.contentTextView.setText(biz.getContent());
-        holder.usernameTextView.setText(biz.getUsername());
+        holder.usernameTextView.setText(biz.getAuthor());
         holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
         holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
+        holder.replyCounTextView.setText(String.valueOf(biz.getReplies()));
         holder.timeTextView.setText(biz.getFormattedDate());
 
         holder.rebizedLayout.setVisibility(View.GONE);
 
         updateRebizInfo(biz, holder.rebizedLayout, holder.textViewRebized);
 
+        // Manage the click on the profile picture
         holder.viewProfil.setOnClickListener(v -> {
             Context context = holder.viewProfil.getContext();
             Intent intent = new Intent(context, ProfilActivity.class);
             intent.putExtra("userId", biz.getUserId());
-            intent.putExtra("username", biz.getUsername());
+            intent.putExtra("username", biz.getAuthor());
             context.startActivity(intent);
         });
 
+        // Manage the click on the comment button
         holder.buttonComment.setOnClickListener(v -> {
             Context context = holder.buttonComment.getContext();
             Intent intent = new Intent(context, CommentBizActivity.class);
-            intent.putExtra("bizUsername", biz.getUsername());
+            intent.putExtra("bizUsername", biz.getAuthor());
             intent.putExtra("bizContent", biz.getContent());
+            intent.putExtra("bizId", biz.getId());
+            context.startActivity(intent);
+        });
+
+        // Manage the click on the Biz
+        holder.contentTextView.setOnClickListener(v -> {
+            Context context = holder.contentTextView.getContext();
+            Intent intent = new Intent(context, BizConversationActivity.class);
+            intent.putExtra("bizId", biz.getId());
+            intent.putExtra("bizContent", biz.getContent());
+            intent.putExtra("bizUsername", biz.getAuthor());
+            intent.putExtra("bizTime", biz.getTime());
             context.startActivity(intent);
         });
 
         DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/").getReference("likesRef").child(biz.getId());
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         holder.buttonOptions.setOnClickListener(v -> showBottomSheetDialog(holder.itemView.getContext(), biz));
 
         // Like state managing
-        likesRef.child("userRefs").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        likesRef.child("userRefs").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean isLiked = snapshot.exists();
@@ -135,8 +153,8 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
            holder.buttonLike.setSelected(isLiked);
 
            if (isLiked) {
-               likesRef.child("userRefs").child(userId).setValue(true);
-               likesRef.child("likeCount").setValue(biz.getLikes() + 1);
+               likesRef.child("userRefs").child(currentUserId).setValue(true);
+               likesRef.child("likeCount").setValue(ServerValue.increment(1));
 
                biz.incrementLikes();
                holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
@@ -145,8 +163,8 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
                holder.likeCountTextView.setTextColor(primaryColor);
 
            } else {
-               likesRef.child("userRefs").child(userId).removeValue();
-               likesRef.child("likeCount").setValue(biz.getLikes() - 1);
+               likesRef.child("userRefs").child(currentUserId).removeValue();
+               likesRef.child("likeCount").setValue(ServerValue.increment(-1));
 
                biz.decrementLikes();
                holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
@@ -159,7 +177,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         });
 
         // Rebiz state managing
-        likesRef.child("rebizRefs").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        likesRef.child("rebizRefs").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean isRebizzed = snapshot.exists();
@@ -185,8 +203,8 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
             holder.buttonRebiz.setSelected(isRebizzed);
 
             if (isRebizzed) {
-                likesRef.child("rebizRefs").child(userId).setValue(true);
-                likesRef.child("rebizCount").setValue(biz.getRebizzes() + 1);
+                likesRef.child("rebizRefs").child(currentUserId).setValue(true);
+                likesRef.child("rebizCount").setValue(ServerValue.increment(1));
 
                 biz.incrementRebiz();
                 holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
@@ -195,8 +213,8 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
                 holder.shareCountTextView.setTextColor(shareColor);
 
             } else {
-                likesRef.child("rebizRefs").child(userId).removeValue();
-                likesRef.child("rebizCount").setValue(biz.getRebizzes() - 1);
+                likesRef.child("rebizRefs").child(currentUserId).removeValue();
+                likesRef.child("rebizCount").setValue(ServerValue.increment(-1));
 
                 biz.decrementRebiz();
                 holder.shareCountTextView.setText(String.valueOf(biz.getRebizzes()));
@@ -223,7 +241,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
      * ViewHolder class for Biz, holding references to each UI element
      */
     public static class BizViewHolder extends RecyclerView.ViewHolder {
-        TextView contentTextView, usernameTextView, likeCountTextView, timeTextView, shareCountTextView, textViewRebized;
+        TextView contentTextView, usernameTextView, likeCountTextView, timeTextView, shareCountTextView, textViewRebized, replyCounTextView;
         public ImageButton buttonLike, buttonOptions, viewProfil, buttonRebiz, buttonComment;
         LinearLayout rebizedLayout;
 
@@ -242,6 +260,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
             usernameTextView = itemview.findViewById(R.id.textViewBizUsername);
             likeCountTextView = itemview.findViewById(R.id.like_count);
             shareCountTextView = itemview.findViewById(R.id.rebiz_count);
+            replyCounTextView = itemview.findViewById(R.id.comment_count);
             timeTextView = itemview.findViewById(R.id.textViewBizTime);
             viewProfil = itemview.findViewById(R.id.imageViewProfile);
 
@@ -289,9 +308,14 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         DatabaseReference likesRef = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("likesRef").child(biz.getId());
 
+        Map<String, Object> deletedData = new HashMap<>();
+        deletedData.put("isDeleted", true);
+        deletedData.put("author", biz.getAuthor());
+        deletedData.put("time", System.currentTimeMillis());
+
         FirebaseFirestore.getInstance().collection("bizs")
                 .document(biz.getId())
-                .delete()
+                .set(deletedData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     likesRef.removeValue()
                         .addOnSuccessListener(aVoid2 -> {

@@ -50,6 +50,9 @@
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
             android:label="Create Biz">
         </activity>
+        <activity android:name=".BizConversationActivity"
+            android:label="Biz's conversation">
+        </activity>
         <activity android:name=".Bizzes.CommentBizActivity"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
             android:label="Comment Biz">

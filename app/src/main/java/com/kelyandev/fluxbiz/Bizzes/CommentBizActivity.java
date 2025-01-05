@@ -18,9 +18,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -28,10 +30,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kelyandev.fluxbiz.R;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +48,8 @@ public class CommentBizActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private FirebaseDatabase rdb;
+    private FirebaseAuth mAuth;
+    private String currentUsername;
     private ImageButton buttonCancel;
     private Button buttonComment;
     private EditText commentContent;
@@ -59,6 +70,8 @@ public class CommentBizActivity extends AppCompatActivity {
 
         // View to handle the total scrollable height
         spacerView = findViewById(R.id.spacerView);
+        // Authentification to get the user's ID
+        mAuth = FirebaseAuth.getInstance();
         // Original Biz & Comment views
         commentContent = findViewById(R.id.CommentContent);
         originalUsernameView = findViewById(R.id.BizUsername);
@@ -85,10 +98,12 @@ public class CommentBizActivity extends AppCompatActivity {
 
         // Get the instance of Firestore
         db = FirebaseFirestore.getInstance();
+        rdb = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/");
 
         // Receive the username, as well as the content of the original Biz
         String username = getIntent().getStringExtra("bizUsername");
         String originalContent = getIntent().getStringExtra("bizContent");
+        String bizId = getIntent().getStringExtra("bizId");
 
         // Adapt the answer textView, to change the color of the @username
         TextView answerTextView = findViewById(R.id.answeringTextView);
@@ -127,7 +142,7 @@ public class CommentBizActivity extends AppCompatActivity {
             }
         });
 
-        buttonComment.setOnClickListener(view -> sendComment());
+        buttonComment.setOnClickListener(view -> sendComment(bizId,username));
 
     }
 
@@ -194,6 +209,89 @@ public class CommentBizActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Gets the username of the current FluzBiz's user
+     */
+    private void getCurrentUsername() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-    private void sendComment() {}
+        if (currentUser != null) {
+            currentUsername = currentUser.getDisplayName();
+        } else {
+            Toast.makeText(this,"Vous n'êtes pas connecté", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Adds the comment to Firestore
+     * @param parentBizId The original biz's ID
+     * @param replyToUser The username of the parent's author
+     */
+    private void sendComment(String parentBizId, String replyToUser) {
+        buttonComment.setEnabled(false);
+        String commentText = commentContent.getText().toString().trim();
+
+        if (commentText.isEmpty()) {
+            Toast.makeText(this, "Le commentaire ne peut pas être vide", Toast.LENGTH_SHORT).show();
+            buttonComment.setEnabled(true);
+            return;
+        }
+
+        CollectionReference commentsCollection = db.collection("replies");
+        getCurrentUsername();
+
+        Map<String, Object> comment = new HashMap<>();
+        comment.put("text", commentText);
+        comment.put("time", System.currentTimeMillis());
+        comment.put("userId", mAuth.getUid());
+        comment.put("author", currentUsername);
+        comment.put("parentBizId", parentBizId);
+        comment.put("replyToUser", replyToUser);
+        comment.put("isDeleted", false);
+
+        commentsCollection.add(comment)
+                .addOnSuccessListener(documentReference -> {
+                    String replyId = documentReference.getId();
+
+                    updateParentRepliesCount(parentBizId);
+
+                    manageRealtimeDatabase(replyId);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Le commentaire n'a pas pu être ajouté", Toast.LENGTH_SHORT).show();
+                   buttonComment.setEnabled(false);
+                });
+
+    }
+
+    /**
+     * Update the reply count of the parent Biz / comment
+     * @param parentBizId The Original Biz's ID
+     */
+    private void updateParentRepliesCount(String parentBizId) {
+        DatabaseReference repliesRef = rdb.getReference("likesRef").child(parentBizId);
+
+        repliesRef.child("replyCount").setValue(ServerValue.increment(1));
+    }
+
+    /**
+     * Manage the initialisation of the reply's counters
+     * @param replyId The reply's ID
+     */
+    private void manageRealtimeDatabase(String replyId) {
+        DatabaseReference reference = rdb.getReference("likesRef").child(replyId);
+
+        Map<String, Object> replyData = new HashMap<>();
+        replyData.put("likeCount", 0);
+        replyData.put("rebizCount", 0);
+        replyData.put("replyCount", 0);
+
+        reference.setValue(replyData).addOnSuccessListener(aVoid -> {
+            Toast.makeText(this, "Commentaire ajouté avec succès", Toast.LENGTH_SHORT).show();
+            finish();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Erreur lors de l'initialisation des compteurs", Toast.LENGTH_SHORT).show();
+            buttonComment.setEnabled(true);
+        });
+    }
 }
