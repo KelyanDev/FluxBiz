@@ -45,6 +45,7 @@ import com.kelyandev.fluxbiz.Bizzes.Adapters.BizAdapter;
 import com.kelyandev.fluxbiz.Auth.LoginActivity;
 import com.kelyandev.fluxbiz.Bizzes.CreateBizActivity;
 import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
+import com.kelyandev.fluxbiz.Profile.ProfilActivity;
 import com.kelyandev.fluxbiz.Settings.SettingsActivity;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ImageButton button, navButton;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private boolean synchronizing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
      * Function to force the recyclerView to refresh
      */
     private void refreshRecyclerViewData() {
-        loadDataFromFirestore();
+        syncFeedWithServers();
     }
 
     /**
@@ -190,11 +192,9 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful() && task.getResult() != null) {
                         Log.d("Firestore Cache", "Data loaded successfully");
                         updateBizList(task.getResult().getDocuments());
-                        loadRealtimeDatabaseLikes(true);
-                        loadDataFromFirestore();
                     } else {
                         Log.d("Firestore Cache", "No data found in cache");
-                        loadDataFromFirestore();
+                        syncFeedWithServers();
                     }
                 });
     }
@@ -202,17 +202,17 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Function to load Bizzes from Firestore
      */
-    private void loadDataFromFirestore() {
+    private void syncFeedWithServers() {
         swiperefreshlayout.setRefreshing(true);
+        synchronizing = true;
 
         db.collection("bizs")
                 .whereEqualTo("isDeleted", false)
                 .orderBy("time", Query.Direction.DESCENDING)
-                .get()
+                .get(Source.SERVER)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         updateBizList(task.getResult().getDocuments());
-                        loadRealtimeDatabaseLikes(false);
                     } else {
                         Log.d("Firestore", "Failed to fetch data", task.getException());
                     }
@@ -221,13 +221,15 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Function to load data from RealtimeDatabase
-     * @param useCache Is the data loaded from cache. If not, data will keep sync with database
+     * @param newBizList The new bizzes list to be loaded
      */
-    private void loadRealtimeDatabaseLikes(boolean useCache) {
+    private void loadRealtimeDatabaseLikes(List<Biz> newBizList) {
         AtomicInteger completedTasks = new AtomicInteger(0);
-        AtomicInteger totalTasks = new AtomicInteger(bizList.size() * 3);
+        AtomicInteger totalTasks = new AtomicInteger(newBizList.size() * 3);
 
-        for (Biz biz: bizList) {
+        Log.d("RealtimeDatabase", "Loading new bizzes data");
+
+        for (Biz biz: newBizList) {
             DatabaseReference interactionRef = rdb.getReference("likesRef").child(biz.getId());
 
             ValueEventListener likeListener = new ValueEventListener() {
@@ -237,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                         biz.setLikes(snapshot.getValue(Integer.class));
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
-                        finalizeBizListUpdate(true);
+                        finalizeBizListUpdate(newBizList);
                     }
                 }
 
@@ -254,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                         biz.setRebizzes(snapshot.getValue(Integer.class));
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
-                        finalizeBizListUpdate(true);
+                        finalizeBizListUpdate(newBizList);
                     }
                 }
 
@@ -271,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                         biz.setReplies(snapshot.getValue(Integer.class));
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
-                        finalizeBizListUpdate(false);
+                        finalizeBizListUpdate(newBizList);
                     }
                 }
 
@@ -285,10 +287,9 @@ public class MainActivity extends AppCompatActivity {
             interactionRef.child("rebizCount").addListenerForSingleValueEvent(rebizListener);
             interactionRef.child("replyCount").addListenerForSingleValueEvent(replyListener);
 
-            if (!useCache) {
+            if (synchronizing) {
                 interactionRef.keepSynced(true);
             }
-            swiperefreshlayout.setRefreshing(false);
         }
     }
 
@@ -297,6 +298,8 @@ public class MainActivity extends AppCompatActivity {
      * @param documents The different Bizzes
      */
     private void updateBizList(List<DocumentSnapshot> documents) {
+        List<Biz> newBizList = new ArrayList<>();
+        Log.d("UpdateBizList", "Updating biz list...");
         for (DocumentSnapshot document : documents) {
             String id = document.getId();
             Biz existingBiz = findBizById(id);
@@ -304,9 +307,8 @@ public class MainActivity extends AppCompatActivity {
             if (existingBiz != null) {
                 if (!Objects.equals(existingBiz.getContent(), document.getString("content"))) {
                     existingBiz.setContent(document.getString("content"));
-                    int index = bizList.indexOf(existingBiz);
-                    bizAdapter.notifyItemChanged(index);
                 }
+                newBizList.add(existingBiz);
             } else {
                 String content = document.getString("content");
                 long time = document.getLong("time");
@@ -314,28 +316,34 @@ public class MainActivity extends AppCompatActivity {
                 String userId = document.getString("userId");
 
                 Biz biz = new Biz(id, content, time, username, 0, 0, 0, userId);
-                bizList.add(biz);
-                bizAdapter.notifyItemInserted(bizList.size() - 1);
+                newBizList.add(biz);
             }
         }
+
+        loadRealtimeDatabaseLikes(newBizList);
     }
 
     /**
-     * Finalize the update process: calculate scores, sort the list, and notify the adapter
-     * @param updateScore Should the Bizzes recalculate their score
+     * Finalize the update process: calculate scores, sort the new list, and give it to the adapter
+     * @param newBizList The new biz list loaded from Firestore
      */
-    private void finalizeBizListUpdate(Boolean updateScore) {
-        if (updateScore) {
-            for (Biz biz: bizList) {
-                biz.calculateScore();
-            }
-            bizList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
+    private void finalizeBizListUpdate(List<Biz> newBizList) {
+        for (Biz biz: newBizList) {
+            biz.calculateScore();
         }
-        bizAdapter.notifyDataSetChanged();
+        newBizList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
+        swiperefreshlayout.setRefreshing(false);
+        bizAdapter.updateData(newBizList);
+
+        if (!synchronizing) {
+            syncFeedWithServers();
+        } else {
+            synchronizing = false;
+        }
     }
 
     /**
-     * Function to check if a Biz already exists in the user's feed
+     * Checks if a Biz already exists in the user's feed
      * @param id The Biz's ID
      * @return Return the biz if it exists, and null if it doesn't
      */

@@ -1,30 +1,21 @@
 package com.kelyandev.fluxbiz;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
-import android.util.TypedValue;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.color.MaterialColors;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,8 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.kelyandev.fluxbiz.Bizzes.Adapters.ReplyAdapter;
 import com.kelyandev.fluxbiz.Bizzes.CommentBizActivity;
-import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.Bizzes.Models.Reply;
+import com.kelyandev.fluxbiz.Profile.ProfilActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,15 +37,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BizConversationActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ReplyAdapter replyAdapter;
     private ImageButton arrowBack;
-    private String bizId, bizContent, bizUsername, userId;
+    private String bizId, bizContent, bizUsername, userId, bizAuthorId;
     private long bizTime;
     private int bizLike, bizRebiz;
     private FirebaseFirestore db;
@@ -63,7 +52,7 @@ public class BizConversationActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private List<Reply> replyList;
     private TextView bizTextUsername, bizTextContent, bizTextTime, likeCount, rebizCount;
-    private ImageButton rebizButton, likeButton, commentButton;
+    private ImageButton rebizButton, likeButton, commentButton, profilButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +75,7 @@ public class BizConversationActivity extends AppCompatActivity {
         bizContent = getIntent().getStringExtra("bizContent");
         bizUsername = getIntent().getStringExtra("bizUsername");
         bizTime = getIntent().getLongExtra("bizTime", System.currentTimeMillis());
+        bizAuthorId = getIntent().getStringExtra("authorId");
         bizLike = 0;
         bizRebiz = 0;
         // Layout original biz
@@ -94,6 +84,7 @@ public class BizConversationActivity extends AppCompatActivity {
         bizTextTime = findViewById(R.id.originalBizTime);
         rebizCount = findViewById(R.id.rebiz_count);
         likeCount = findViewById(R.id.like_count);
+        profilButton = findViewById(R.id.imageViewProfile);
         // Original Biz buttons
         rebizButton = findViewById(R.id.buttonRebiz);
         likeButton = findViewById(R.id.buttonLike);
@@ -129,6 +120,14 @@ public class BizConversationActivity extends AppCompatActivity {
             intent.putExtra("bizUsername", bizUsername);
             intent.putExtra("bizContent", bizContent);
             intent.putExtra("bizId", bizId);
+            startActivity(intent);
+        });
+
+        // Button to go to the author's profile
+        profilButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfilActivity.class);
+            intent.putExtra("userId", bizAuthorId);
+            intent.putExtra("username", bizUsername);
             startActivity(intent);
         });
 

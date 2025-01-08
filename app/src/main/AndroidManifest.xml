@@ -60,7 +60,7 @@
         <activity android:name=".Settings.SettingsActivity"
             android:label="Settings">
         </activity>
-        <activity android:name=".ProfilActivity"
+        <activity android:name=".Profile.ProfilActivity"
             android:label="Profile">
         </activity>
         <service

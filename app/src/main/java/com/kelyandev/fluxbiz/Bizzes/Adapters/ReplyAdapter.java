@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -27,15 +27,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.encoders.ObjectEncoder;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.kelyandev.fluxbiz.Bizzes.CommentBizActivity;
 import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.Bizzes.Models.Reply;
-import com.kelyandev.fluxbiz.ProfilActivity;
+import com.kelyandev.fluxbiz.Profile.ProfilActivity;
 import com.kelyandev.fluxbiz.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +53,42 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     public ReplyAdapter(List<Reply> replyList, String currentUserId) {
         this.replyList = replyList;
         this.currentUserId = currentUserId;
+    }
+
+    /**
+     * Updates the new data in the Adapter.
+     * This function will compare the difference between the old reply list and the new one.
+     * After comparing the multiple items of the lists, the function will tell the adapter which data needs to be modified.
+     * @param newReplyList The new reply list to update the data
+     */
+    public void updateData(List<Reply> newReplyList) {
+        List<Reply> safeNewReplyList = new ArrayList<>(newReplyList);
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return replyList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newReplyList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return replyList.get(oldItemPosition).getId().equals(newReplyList.get(newItemPosition).getId());
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return replyList.get(oldItemPosition).equals(newReplyList.get(newItemPosition));
+            }
+        });
+        replyList.clear();
+        replyList.addAll(safeNewReplyList);
+
+        diffResult.dispatchUpdatesTo(this);
     }
 
     /**

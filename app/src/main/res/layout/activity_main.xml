@@ -79,13 +79,14 @@
 
             <ImageButton
                 android:id="@+id/buttonLog"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="80dp"
                 android:background="@drawable/rounded_button"
                 android:src="@drawable/ic_write"
                 android:scaleType="centerCrop"
+                android:padding="13dp"
                 app:layout_anchor="@id/swipeRefreshLayout"
                 app:layout_anchorGravity="bottom|end"
                 tools:ignore="ContentDescription,HardcodedText" />

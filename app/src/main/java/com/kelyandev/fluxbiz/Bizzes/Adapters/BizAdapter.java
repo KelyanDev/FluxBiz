@@ -13,11 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.color.MaterialColors;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,9 +29,10 @@ import com.google.firebase.firestore.SetOptions;
 import com.kelyandev.fluxbiz.BizConversationActivity;
 import com.kelyandev.fluxbiz.Bizzes.CommentBizActivity;
 import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
-import com.kelyandev.fluxbiz.ProfilActivity;
+import com.kelyandev.fluxbiz.Profile.ProfilActivity;
 import com.kelyandev.fluxbiz.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +54,50 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
     public BizAdapter(List<Biz> bizList, String currentUserId) {
         this.bizList = bizList;
         this.currentUserId = currentUserId;
+    }
+
+    /**
+     * Updates the new data in the Adapter.
+     * This function will compare the difference between the old biz list and the new one.
+     * After comparing the multiple items of the lists, the function will tell the adapter which data needs to be modified.
+     * @param newBizList The new biz list to update the data
+     */
+    public void updateData(List<Biz> newBizList) {
+        List<Biz> safeNewBizList = new ArrayList<>(newBizList);
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return bizList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newBizList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                boolean answer = bizList.get(oldItemPosition).getId()
+                        .equals(newBizList.get(newItemPosition).getId());
+                Log.d("BizAdapterDiffResult", "Are Items the same: " + answer);
+                return bizList.get(oldItemPosition).getId()
+                        .equals(newBizList.get(newItemPosition).getId());
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                boolean answer = bizList.get(oldItemPosition)
+                        .equals(newBizList.get(newItemPosition));
+                Log.d("BizAdapterDiffResult", "Are contents the same: " + answer);
+                return bizList.get(oldItemPosition)
+                        .equals(newBizList.get(newItemPosition));
+            }
+        });
+        bizList.clear();
+        bizList.addAll(safeNewBizList);
+
+        diffResult.dispatchUpdatesTo(this);
     }
 
 
@@ -80,6 +125,10 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull BizViewHolder holder, int position) {
         Biz biz = bizList.get(position);
+
+        Log.d("BizAdapter View holder", "I just got called to bind a view !");
+        Log.d("BizAdapter View holder", "Biz's ID: " + biz.getId());
+
 
         holder.contentTextView.setText(biz.getContent());
         holder.usernameTextView.setText(biz.getAuthor());
@@ -119,6 +168,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
             intent.putExtra("bizContent", biz.getContent());
             intent.putExtra("bizUsername", biz.getAuthor());
             intent.putExtra("bizTime", biz.getTime());
+            intent.putExtra("authorId", biz.getUserId());
             context.startActivity(intent);
         });
 
@@ -320,7 +370,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
                     likesRef.removeValue()
                         .addOnSuccessListener(aVoid2 -> {
                             bizList.remove(biz);
-                            notifyDataSetChanged();
+                            updateData(bizList);
                         }).addOnFailureListener(e -> Log.w("Biz deletion", "Error deleting biz from Database"));
                 }).addOnFailureListener(e -> Log.w("Biz Deletion", "Error deleting biz from Firestore", e));
     }

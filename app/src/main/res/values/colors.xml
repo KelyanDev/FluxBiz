@@ -9,6 +9,7 @@
     <color name="my_dark_primary">#F87217</color>
     <color name="my_dark_primary_variant">#3700B3</color>
     <color name="my_dark_on_primary">#1B1B1F</color>
+    <color name="my_dark_background">#151218</color>
 
     <!-- Borders and outlines -->
     <color name="my_light_border">#AAB8C2</color>
