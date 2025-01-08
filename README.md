@@ -139,9 +139,9 @@ You can use this app in your every day life.
 ## Roadmap
 
 - [ ] Notifications
-- [ ] New Biz features
-    - [ ] ReBiz
-    - [ ] Comments
+- [x] New Biz features
+    - [x] ReBizzes
+    - [x] Replies
     - [ ] Images
 - [ ] Finish settings
 - [ ] New Users features
