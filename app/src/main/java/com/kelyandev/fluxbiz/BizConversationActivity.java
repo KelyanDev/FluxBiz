@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -43,7 +44,7 @@ public class BizConversationActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ReplyAdapter replyAdapter;
     private ImageButton arrowBack;
-    private String bizId, bizContent, bizUsername, userId, bizAuthorId;
+    private String bizId, bizContent, bizUsername, userId, bizAuthorId, parentId;
     private long bizTime;
     private int bizLike, bizRebiz;
     private FirebaseFirestore db;
@@ -51,8 +52,9 @@ public class BizConversationActivity extends AppCompatActivity {
     private DatabaseReference bizRef;
     private FirebaseAuth mAuth;
     private List<Reply> replyList;
-    private TextView bizTextUsername, bizTextContent, bizTextTime, likeCount, rebizCount;
+    private TextView bizTextUsername, bizTextContent, bizTextTime, likeCount, rebizCount, emptyText;
     private ImageButton rebizButton, likeButton, commentButton, profilButton;
+    private boolean isReply;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,10 @@ public class BizConversationActivity extends AppCompatActivity {
         bizAuthorId = getIntent().getStringExtra("authorId");
         bizLike = 0;
         bizRebiz = 0;
+        isReply = getIntent().getBooleanExtra("isReply", false);
+        if (isReply) {
+            parentId = getIntent().getStringExtra("parentId");
+        }
         // Layout original biz
         bizTextUsername = findViewById(R.id.originalBizUsername);
         bizTextContent = findViewById(R.id.originalBizContent);
@@ -96,6 +102,7 @@ public class BizConversationActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getCurrentUser().getUid();
         // Replies recycler view layout
+        emptyText = findViewById(R.id.emptyReplyList);
         recyclerView = findViewById(R.id.commentFeed);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         replyList = new ArrayList<>();
@@ -251,7 +258,6 @@ public class BizConversationActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         updateReplyList(task.getResult().getDocuments());
-                        loadRealtimeDatabaseData();
                     } else {
                         Log.d("Firestore", "Failed to fetch data from servers", task.getException());
                     }
@@ -261,11 +267,11 @@ public class BizConversationActivity extends AppCompatActivity {
     /**
      * Load replies data from RealtimeDatabase
      */
-    private void loadRealtimeDatabaseData() {
+    private void loadRealtimeDatabaseData(List<Reply> newReplyList) {
         AtomicInteger completedTasks = new AtomicInteger(0);
-        AtomicInteger totalTasks = new AtomicInteger(replyList.size() * 3);
+        AtomicInteger totalTasks = new AtomicInteger(newReplyList.size() * 3);
 
-        for (Reply reply : replyList) {
+        for (Reply reply : newReplyList) {
             DatabaseReference interactionRef = rdb.getReference("likesRef").child(reply.getId());
 
             ValueEventListener likeListener = new ValueEventListener() {
@@ -275,7 +281,7 @@ public class BizConversationActivity extends AppCompatActivity {
                         reply.setLikes(snapshot.getValue(Integer.class));
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
-                        finalizeReplyListUpdate(true);
+                        finalizeReplyListUpdate(newReplyList);
                     }
                 }
 
@@ -292,7 +298,7 @@ public class BizConversationActivity extends AppCompatActivity {
                         reply.setRebizzes(snapshot.getValue(Integer.class));
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
-                        finalizeReplyListUpdate(true);
+                        finalizeReplyListUpdate(newReplyList);
                     }
                 }
 
@@ -309,7 +315,7 @@ public class BizConversationActivity extends AppCompatActivity {
                         reply.setReplies(snapshot.getValue(Integer.class));
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
-                        finalizeReplyListUpdate(false);
+                        finalizeReplyListUpdate(newReplyList);
                     }
                 }
 
@@ -330,6 +336,7 @@ public class BizConversationActivity extends AppCompatActivity {
      * @param documents The different replies
      */
     private void updateReplyList(List<DocumentSnapshot> documents) {
+        List<Reply> newReplyList = new ArrayList<>();
         for (DocumentSnapshot document : documents) {
             String id = document.getId();
 
@@ -340,22 +347,24 @@ public class BizConversationActivity extends AppCompatActivity {
             String replyToUser = document.getString("replyToUser");
 
             Reply reply = new Reply(id, content, time, author, 0, 0, 0, userId, replyToUser, bizId);
-            replyList.add(reply);
-            replyAdapter.notifyItemInserted(replyList.size() - 1);
+            newReplyList.add(reply);
+        }
+        if (newReplyList.isEmpty()) {
+            emptyText.setVisibility(View.VISIBLE);
+        } else {
+            loadRealtimeDatabaseData(newReplyList);
         }
     }
 
     /**
      * Finalize the update process: calculate scores, sort the list, and notify the adapter
-     * @param updateScore Should the Replies recalculate their score
+     * @param newReplyList The new reply list to load in the adapter
      */
-    private void finalizeReplyListUpdate(Boolean updateScore) {
-        if (updateScore) {
-            for (Reply reply: replyList) {
-                reply.calculateScore();
-            }
-            replyList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
+    private void finalizeReplyListUpdate(List<Reply> newReplyList) {
+        for (Reply reply: newReplyList) {
+            reply.calculateScore();
         }
-        replyAdapter.notifyDataSetChanged();
+        replyList.sort((b1, b2) -> Double.compare(b2.getScore(), b1.getScore()));
+        replyAdapter.updateData(newReplyList);
     }
 }

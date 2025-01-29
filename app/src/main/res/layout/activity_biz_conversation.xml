@@ -232,6 +232,19 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:id="@+id/emptyReplyList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emptyReplyList"
+                android:textSize="15sp"
+                android:layout_marginTop="10dp"
+                android:textColor="?attr/colorOnSecondary"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/originalBiz"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentFeed"
                 android:layout_width="match_parent"
@@ -243,6 +256,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

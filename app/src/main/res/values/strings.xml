@@ -38,4 +38,5 @@
     <string name="accessibility">Accessibilité</string>
     <string name="comment_hint">Postez votre réponse</string>
     <string name="answer_text">En réponse à @user</string>
+    <string name="emptyReplyList">C\'est vide ici ...</string>
 </resources>

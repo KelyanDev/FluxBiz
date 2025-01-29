@@ -1,7 +1,5 @@
 package com.kelyandev.fluxbiz.Bizzes;
 
-import static androidx.core.util.TypedValueCompat.dpToPx;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +14,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kelyandev.fluxbiz.Bizzes.Circle.SmallProgressCircleView;
 import com.kelyandev.fluxbiz.R;
 
 import java.util.HashMap;
@@ -64,7 +62,11 @@ public class CommentBizActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right,
+                    Math.max(systemBars.bottom, imeInsets.bottom));
+
             return insets;
         });
 
@@ -80,6 +82,9 @@ public class CommentBizActivity extends AppCompatActivity {
         // Buttons
         buttonCancel = findViewById(R.id.buttonCancel);
         buttonComment = findViewById(R.id.buttonSendComment);
+        // Progress Circle
+        SmallProgressCircleView progressCircle = findViewById(R.id.smallProgressCircle);
+        progressCircle.setMaxChars(300);
 
         // Force the keyboard to appear once activity is created
         commentContent.requestFocus();
@@ -135,6 +140,8 @@ public class CommentBizActivity extends AppCompatActivity {
                 } else {
                     buttonComment.setEnabled(true);
                 }
+
+                progressCircle.setCurrentChars(charSequence.length());
             }
 
             @Override

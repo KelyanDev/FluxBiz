@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kelyandev.fluxbiz.Bizzes.Circle.SmallProgressCircleView;
 import com.kelyandev.fluxbiz.R;
 
 import java.util.HashMap;
@@ -48,16 +49,25 @@ public class CreateBizActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right,
+                    Math.max(systemBars.bottom, imeInsets.bottom));
+
             return insets;
         });
 
+        // Objects Instantiation
+        // Auth and Database instances
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-
+        // Biz content instances
         bizContent = findViewById(R.id.editTextBizContent);
         buttonSend = findViewById(R.id.buttonSendBiz);
         cancel = findViewById(R.id.buttonCancel);
+        // Progress Circle instance
+        SmallProgressCircleView progressCircle = findViewById(R.id.smallProgressCircle);
+        progressCircle.setMaxChars(300);
 
         // Force the Keyboard to appear on the initial load of the activity
         bizContent.requestFocus();
@@ -88,6 +98,8 @@ public class CreateBizActivity extends AppCompatActivity {
                 } else {
                     buttonSend.setEnabled(true);
                 }
+
+                progressCircle.setCurrentChars(charSequence.length());
             }
 
             @Override

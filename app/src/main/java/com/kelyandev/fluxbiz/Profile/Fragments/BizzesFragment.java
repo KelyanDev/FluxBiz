@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +42,7 @@ public class BizzesFragment extends Fragment {
     private FirebaseFirestore db;
     private List<Biz> bizList = new ArrayList<>();
     private ProfilActivity activity;
+    private TextView emptyText;
 
     @Nullable
     @Override
@@ -51,6 +53,7 @@ public class BizzesFragment extends Fragment {
         // --
         // Progress Bar
         progressBar = view.findViewById(R.id.progressBar);
+        emptyText = view.findViewById(R.id.EmptyListText);
         // RecyclerView
         recyclerView = view.findViewById(R.id.recyclerViewBizs);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -100,7 +103,12 @@ public class BizzesFragment extends Fragment {
                             );
                             newBizList.add(biz);
                         }
-                        loadDataFromDatabase(newBizList);
+                        if (newBizList.isEmpty()) {
+                            progressBar.setVisibility(View.GONE);
+                            emptyText.setVisibility(View.VISIBLE);
+                        } else {
+                            loadDataFromDatabase(newBizList);
+                        }
                     }
                 });
     }
@@ -126,7 +134,7 @@ public class BizzesFragment extends Fragment {
                     }
                     if (completedTasks.incrementAndGet() == totalTasks.get()) {
                         activity.setBizList(newBizList);
-                        activity.setBizList(newBizList);
+                        updateAdapterData(newBizList);
                     }
                 }
 

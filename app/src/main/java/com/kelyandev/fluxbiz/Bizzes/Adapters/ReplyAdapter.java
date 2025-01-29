@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kelyandev.fluxbiz.BizConversationActivity;
 import com.kelyandev.fluxbiz.Bizzes.CommentBizActivity;
 import com.kelyandev.fluxbiz.Bizzes.Models.Biz;
 import com.kelyandev.fluxbiz.Bizzes.Models.Reply;
@@ -134,6 +136,20 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             intent.putExtra("bizUsername", reply.getAuthor());
             intent.putExtra("bizContent", reply.getContent());
             intent.putExtra("bizId", reply.getId());
+            context.startActivity(intent);
+        });
+
+        // Manage the click on the reply
+        holder.replyGlobalLayout.setOnClickListener(v -> {
+            Context context = holder.replyGlobalLayout.getContext();
+            Intent intent = new Intent(context, BizConversationActivity.class);
+            intent.putExtra("bizId", reply.getId());
+            intent.putExtra("bizContent", reply.getContent());
+            intent.putExtra("bizUsername", reply.getAuthor());
+            intent.putExtra("bizTime", reply.getTime());
+            intent.putExtra("authorId", reply.getUserId());
+            intent.putExtra("isReply", true);
+            intent.putExtra("parentId", reply.getParentId());
             context.startActivity(intent);
         });
 
@@ -257,6 +273,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     public static class ReplyViewHolder extends RecyclerView.ViewHolder {
         TextView content, author, likeCount, rebizCount, replyCount, time, replyingTextView;
         public ImageButton buttonLike, buttonRebiz, buttonReply, viewProfil, buttonOptions;
+        ConstraintLayout replyGlobalLayout;
 
         /**
          * Constructor for ReplyViewHolder
@@ -271,6 +288,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             replyCount = itemview.findViewById(R.id.rebiz_count);
             time = itemview.findViewById(R.id.ReplyTime);
             replyingTextView = itemview.findViewById(R.id.ReplyMention);
+
+            replyGlobalLayout = itemview.findViewById(R.id.replyItem);
 
             buttonLike = itemview.findViewById(R.id.buttonLike);
             buttonRebiz = itemview.findViewById(R.id.buttonRebiz);

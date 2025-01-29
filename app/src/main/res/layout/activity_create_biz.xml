@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:id="@+id/TopBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/block_border"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -70,5 +69,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/TopBar"
         app:srcCompat="@drawable/user_default" />
+
+    <RelativeLayout
+        android:id="@+id/navbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/nav_border"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.kelyandev.fluxbiz.Bizzes.Circle.SmallProgressCircleView
+            android:id="@+id/smallProgressCircle"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -206,17 +206,40 @@ public class MainActivity extends AppCompatActivity {
         swiperefreshlayout.setRefreshing(true);
         synchronizing = true;
 
-        db.collection("bizs")
-                .whereEqualTo("isDeleted", false)
-                .orderBy("time", Query.Direction.DESCENDING)
-                .get(Source.SERVER)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        updateBizList(task.getResult().getDocuments());
-                    } else {
-                        Log.d("Firestore", "Failed to fetch data", task.getException());
-                    }
-                });
+        db.terminate();
+        db.clearPersistence().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Firestore", "Cache cleared successfully before sync");
+
+                db = FirebaseFirestore.getInstance();
+                db.collection("bizs")
+                        .whereEqualTo("isDeleted", false)
+                        .orderBy("time", Query.Direction.DESCENDING)
+                        .get(Source.SERVER)
+                        .addOnCompleteListener(task2 -> {
+                            if (task2.isSuccessful() && task2.getResult() != null) {
+                                updateBizList(task2.getResult().getDocuments());
+                            } else {
+                                Log.d("Firestore", "Failed to fetch data", task2.getException());
+                            }
+                        });
+            } else {
+                Log.d("Firestore", "Failed to clear cache: " + task.getException());
+
+                db = FirebaseFirestore.getInstance();
+                db.collection("bizs")
+                        .whereEqualTo("isDeleted", false)
+                        .orderBy("time", Query.Direction.DESCENDING)
+                        .get(Source.SERVER)
+                        .addOnCompleteListener(task2 -> {
+                            if (task2.isSuccessful() && task2.getResult() != null) {
+                                updateBizList(task2.getResult().getDocuments());
+                            } else {
+                                Log.d("Firestore", "Failed to fetch data", task2.getException());
+                            }
+                        });
+            }
+        });
     }
 
     /**

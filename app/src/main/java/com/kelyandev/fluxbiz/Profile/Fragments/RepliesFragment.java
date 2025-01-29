@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,7 @@ public class RepliesFragment extends Fragment {
     private FirebaseFirestore db;
     private List<Reply> replyList = new ArrayList<>();
     private ProfilActivity activity;
+    private TextView emptyText;
 
     @Nullable
     @Override
@@ -48,6 +50,7 @@ public class RepliesFragment extends Fragment {
         // --
         // Progress Bar
         progressBar = view.findViewById(R.id.progressBar);
+        emptyText = view.findViewById(R.id.EmptyListText);
         // Recycler View
         recyclerView = view.findViewById(R.id.recyclerViewReplies);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -100,7 +103,14 @@ public class RepliesFragment extends Fragment {
                             );
                             newReplyList.add(reply);
                         }
-                        loadDataFromDatabase(newReplyList);
+                        Log.d("RepliesFragment", "ReplyList size: " + newReplyList.size());
+                        if (newReplyList.isEmpty()) {
+                            Log.d("RepliesFragment", "Nothing was found. Putting empty text instead");
+                            progressBar.setVisibility(View.GONE);
+                            emptyText.setVisibility(View.VISIBLE);
+                        } else {
+                            loadDataFromDatabase(newReplyList);
+                        }
                     }
                 });
     }

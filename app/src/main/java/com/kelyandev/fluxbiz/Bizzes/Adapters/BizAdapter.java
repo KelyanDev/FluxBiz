@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -126,10 +127,6 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
     public void onBindViewHolder(@NonNull BizViewHolder holder, int position) {
         Biz biz = bizList.get(position);
 
-        Log.d("BizAdapter View holder", "I just got called to bind a view !");
-        Log.d("BizAdapter View holder", "Biz's ID: " + biz.getId());
-
-
         holder.contentTextView.setText(biz.getContent());
         holder.usernameTextView.setText(biz.getAuthor());
         holder.likeCountTextView.setText(String.valueOf(biz.getLikes()));
@@ -161,14 +158,15 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         });
 
         // Manage the click on the Biz
-        holder.contentTextView.setOnClickListener(v -> {
-            Context context = holder.contentTextView.getContext();
+        holder.bizGlobalLayout.setOnClickListener(v -> {
+            Context context = holder.bizGlobalLayout.getContext();
             Intent intent = new Intent(context, BizConversationActivity.class);
             intent.putExtra("bizId", biz.getId());
             intent.putExtra("bizContent", biz.getContent());
             intent.putExtra("bizUsername", biz.getAuthor());
             intent.putExtra("bizTime", biz.getTime());
             intent.putExtra("authorId", biz.getUserId());
+            intent.putExtra("isReply", false);
             context.startActivity(intent);
         });
 
@@ -294,6 +292,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
         TextView contentTextView, usernameTextView, likeCountTextView, timeTextView, shareCountTextView, textViewRebized, replyCounTextView;
         public ImageButton buttonLike, buttonOptions, viewProfil, buttonRebiz, buttonComment;
         LinearLayout rebizedLayout;
+        ConstraintLayout bizGlobalLayout;
 
 
         /**
@@ -313,6 +312,8 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
             replyCounTextView = itemview.findViewById(R.id.comment_count);
             timeTextView = itemview.findViewById(R.id.textViewBizTime);
             viewProfil = itemview.findViewById(R.id.imageViewProfile);
+
+            bizGlobalLayout = itemview.findViewById(R.id.bizItem);
 
             textViewRebized = itemview.findViewById(R.id.textViewRebiz);
             rebizedLayout = itemview.findViewById(R.id.Rebized);
