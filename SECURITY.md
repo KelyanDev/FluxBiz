@@ -17,5 +17,5 @@ Please refer to this
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.2.x   | ✅                |
+| 2.0.x   | ✅                |
 | < 1.1   | :x:               |
