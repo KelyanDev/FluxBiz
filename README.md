@@ -127,7 +127,16 @@ Launch the app:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-You can use this app in your every day life.
+Once you install the app for the first time, you'll need to log in using an existing account, or you can register if you don't have one yet. 
+After registration, you'll need to verify your email address by clicking on the link sent to your email inbox.   
+
+Once logged in, your feed will be loaded. You will have the option to create and post a Biz, or interact with other users' existing Bizzes. 
+You can like, repost, or reply to Bizzes. To check the replies to an existing Biz, simply press on it.
+
+By pressing on a user's profile picture, you'll be able to view their profile and see all the Bizzes they've posted or replied to. 
+By pressing your own profile picture (located at the top left of the main activity), you can access your own profile as well as the app's settings.
+
+Lastly, you can modify your account information by navigating to the settings section of the app.
 
 <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
