@@ -1,5 +1,8 @@
 package com.kelyandev.fluxbiz.Auth;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -12,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -20,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.kelyandev.fluxbiz.MainActivity;
 import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
@@ -27,6 +32,7 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -99,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (user != null && user.isEmailVerified()) {
                     usernamerefs.child(user.getUid()).get().addOnCompleteListener(usernameTask -> {
                         if (usernameTask.isSuccessful() && usernameTask.getResult().exists()) {
-                            proceedToMainActivity();
+                            handleNewDevice(user);
                         } else {
                             handleFirstLogin(user);
                         }
@@ -140,12 +146,13 @@ public class LoginActivity extends AppCompatActivity {
         usernamerefs.child(userId).setValue(username).addOnCompleteListener(rtTask -> {
             if (rtTask.isSuccessful()) {
                 Map<String, Object> userMap = new HashMap<>();
+                userMap.put("Username",username);
                 userMap.put("lastUsernameChange", com.google.firebase.Timestamp.now());
 
                 db.collection("users").document(userId).set(userMap)
                         .addOnCompleteListener(fsTask -> {
                             if (fsTask.isSuccessful()) {
-                                proceedToMainActivity();
+                                handleNewDevice(user);
                             } else {
                                 Toast.makeText(this, "Erreur lors de l'enregistrement dans Firestore", Toast.LENGTH_SHORT).show();
                                 loginButton.setEnabled(true);
@@ -156,6 +163,48 @@ public class LoginActivity extends AppCompatActivity {
                 loginButton.setEnabled(true);
             }
         });
+    }
+
+    /**
+     * Handle the registering of the device in the database
+     * @param user The authenticated user
+     */
+    private void handleNewDevice(FirebaseUser user) {
+        String userId = user.getUid();
+        String deviceId = getSafeDeviceId(this);
+
+        Map<String, Object> deviceData = new HashMap<>();
+        deviceData.put("deviceId", deviceId);
+        deviceData.put("deviceName", Build.MANUFACTURER + " " + Build.MODEL);
+        deviceData.put("lastActive", Timestamp.now());
+
+        db.collection("users")
+                .document(userId)
+                .collection("devices")
+                .document(deviceId)
+                .set(deviceData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    proceedToMainActivity();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Erreur lors de l'enregistrement de l'appareil", Toast.LENGTH_SHORT).show();
+                    loginButton.setEnabled(true);
+                });
+    }
+
+    /**
+     * Gets the device ID from the preferences; Generates one if none exist
+     * @param context The context
+     * @return The device's Id
+     */
+    private String getSafeDeviceId(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+        String deviceId = prefs.getString("device_id", null);
+        if (deviceId == null) {
+            deviceId = UUID.randomUUID().toString();
+            prefs.edit().putString("device_id", deviceId).apply();
+        }
+        return deviceId;
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.kelyandev.fluxbiz;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -51,6 +53,7 @@ import com.kelyandev.fluxbiz.Settings.SettingsActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity {
@@ -91,13 +94,10 @@ public class MainActivity extends AppCompatActivity {
         // Database Auth / Firebase instances
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
-        if (currentUser == null) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+        handleStart(mAuth, currentUser);
+
 
         // Recycler View
         recyclerView = findViewById(R.id.recyclerViewBiz);
@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(bizAdapter);
 
         // Database connexion
-        db = FirebaseFirestore.getInstance();
         rdb = FirebaseDatabase.getInstance("https://fluxbiz-data-default-rtdb.europe-west1.firebasedatabase.app/");
 
         loadDataFromCache();
@@ -455,6 +454,71 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/KelyanDev/FluxBiz/releases"));
             startActivity(intent);
         });
+    }
+
+    /**
+     * Function to redirect the user to the Login Activity.
+     */
+    private void redirectToLogin() {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Gets the device ID from the preferences; Generates one if none exist
+     * @param context The context
+     * @return The device's Id
+     */
+    private String getSafeDeviceId(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+        String deviceId = prefs.getString("device_id", null);
+        if (deviceId == null) {
+            deviceId = UUID.randomUUID().toString();
+            prefs.edit().putString("device_id", deviceId).apply();
+        }
+        return deviceId;
+    }
+
+    /**
+     * Function to handle the steps of the app start
+     */
+    private void handleStart(FirebaseAuth mAuth, FirebaseUser currentUser) {
+        String deviceId = getSafeDeviceId(this);
+
+        if (currentUser == null) {
+            redirectToLogin();
+        } else {
+            currentUser.reload().addOnCompleteListener(task -> {
+                FirebaseUser reloadedUser = mAuth.getCurrentUser();
+                if (reloadedUser == null) {
+                    mAuth.signOut();
+                    redirectToLogin();
+                }
+
+                Log.d("AppStartHandler", "Checking user's device: " + deviceId);
+
+                db.collection("users")
+                        .document(reloadedUser.getUid())
+                        .collection("devices")
+                        .document(deviceId)
+                        .get()
+                        .addOnSuccessListener(snapshot -> {
+                            if (!snapshot.exists()) {
+                                Log.d("AppStartHandler", "Device is not connected !");
+                                mAuth.signOut();
+                                redirectToLogin();
+                            } else {
+                                Log.d("AppStartHandler", "Device is connected !");
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.d("AppStartHandler", "Error while getting device: " + e.getMessage());
+                        });
+
+            });
+
+        }
     }
 
 }
