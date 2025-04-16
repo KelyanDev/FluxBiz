@@ -79,18 +79,12 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                boolean answer = bizList.get(oldItemPosition).getId()
-                        .equals(newBizList.get(newItemPosition).getId());
-                Log.d("BizAdapterDiffResult", "Are Items the same: " + answer);
                 return bizList.get(oldItemPosition).getId()
                         .equals(newBizList.get(newItemPosition).getId());
             }
 
             @Override
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                boolean answer = bizList.get(oldItemPosition)
-                        .equals(newBizList.get(newItemPosition));
-                Log.d("BizAdapterDiffResult", "Are contents the same: " + answer);
                 return bizList.get(oldItemPosition)
                         .equals(newBizList.get(newItemPosition));
             }
