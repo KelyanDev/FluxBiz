@@ -148,13 +148,14 @@ Lastly, you can modify your account information by navigating to the settings se
 ## Roadmap
 
 - [ ] Notifications
-- [x] New Biz features
+- [ ] New Biz features
     - [x] ReBizzes
     - [x] Replies
     - [ ] Images
 - [ ] Finish settings
 - [ ] New Users features
     - [ ] Profile picture
+    - [ ] Follows
 
 See the [open issues](https://github.com/KelyanDev/FluxBiz/issues) for a full list of proposed features (and known issues).
 
