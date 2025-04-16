@@ -153,6 +153,7 @@ Lastly, you can modify your account information by navigating to the settings se
     - [x] Replies
     - [ ] Images
 - [ ] Finish settings
+    - [ ] See all connected phones 
 - [ ] New Users features
     - [ ] Profile picture
     - [ ] Follows
