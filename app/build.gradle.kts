@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.kelyandev.fluxbiz"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.kelyandev.fluxbiz"

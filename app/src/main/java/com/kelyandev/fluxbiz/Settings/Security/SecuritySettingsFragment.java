@@ -27,6 +27,7 @@ public class SecuritySettingsFragment extends PreferenceFragmentCompat {
 
         Preference delAccountPreference = findPreference("delAccount");
         Preference changePassword = findPreference("password");
+        Preference activeSessions = findPreference("sessions");
 
         if (delAccountPreference != null) {
             delAccountPreference.setOnPreferenceClickListener(preference -> {
@@ -37,6 +38,12 @@ public class SecuritySettingsFragment extends PreferenceFragmentCompat {
         if (changePassword != null) {
             changePassword.setOnPreferenceClickListener(preference -> {
                 showChangePasswordFragment();
+                return true;
+            });
+        }
+        if (activeSessions != null) {
+            activeSessions.setOnPreferenceClickListener(preference -> {
+                showActiveSessionsFragment();
                 return true;
             });
         }
@@ -104,5 +111,15 @@ public class SecuritySettingsFragment extends PreferenceFragmentCompat {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();
+    }
+
+    /**
+     * Shows the fragment to check active sessions
+     */
+    private void showActiveSessionsFragment() {
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.settings_container, new ConnectedSessionsFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

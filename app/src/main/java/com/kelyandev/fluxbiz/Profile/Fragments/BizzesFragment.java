@@ -64,7 +64,7 @@ public class BizzesFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         bizList = activity.getBizList();
 
-        bizAdapter = new BizAdapter(bizList, userId);
+        bizAdapter = new BizAdapter(bizList, userId, getContext());
         recyclerView.setAdapter(bizAdapter);
 
         if (bizList.isEmpty()) {

@@ -20,7 +20,6 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kelyandev.fluxbiz.Auth.ForgottenPassActivity;
-import com.kelyandev.fluxbiz.Auth.LoginActivity;
 import com.kelyandev.fluxbiz.R;
 
 public class ChangePasswordFragment extends Fragment {

@@ -17,10 +17,10 @@
             app:summary="Protégez votre compte avec une vérification supplémentaire (WIP)"/>
 
         <Preference
-            app:key="connected"
+            app:key="sessions"
             app:title="Afficher les connexions actives"
             app:icon="@drawable/ic_connection"
-            app:summary="Vérifiez les appareils connectés à votre compte (WIP)"/>
+            app:summary="Vérifiez les appareils connectés à votre compte"/>
     </PreferenceCategory>
         <Preference
             app:key="delAccount"

@@ -36,7 +36,11 @@
     <string name="verif">Vérifiez votre identité</string>
     <string name="change_password">Changer mon mot de passe</string>
     <string name="accessibility">Accessibilité</string>
+    <string name="active_sessions">Connexions actives</string>
     <string name="comment_hint">Postez votre réponse</string>
     <string name="answer_text">En réponse à @user</string>
     <string name="emptyReplyList">C\'est vide ici ...</string>
+    <string name="device">Cette appareil</string>
+    <string name="currentActive">Actuellement actif</string>
+    <string name="disconnect">Déconnexion</string>
 </resources>

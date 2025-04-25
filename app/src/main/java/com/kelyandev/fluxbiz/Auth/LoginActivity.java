@@ -17,7 +17,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.kelyandev.fluxbiz.MainActivity;
+import com.kelyandev.fluxbiz.MyApp;
 import com.kelyandev.fluxbiz.R;
 import android.content.Intent;
 import android.widget.Toast;
@@ -116,15 +116,18 @@ public class LoginActivity extends AppCompatActivity {
                     user.sendEmailVerification();
                     loginButton.setEnabled(true);
                 } else {
+                    Toast.makeText(this, "Erreur: utilisateur introuvable", Toast.LENGTH_LONG).show();
                     loginButton.setEnabled(true);
-                    if (task.getException() instanceof FirebaseAuthInvalidUserException) {
-                        Toast.makeText(this, "Ce compte n'existe pas.", Toast.LENGTH_SHORT).show();
-                    } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                        Toast.makeText(this, "Identifiant ou mot de passe incorrect(s). Réessayez", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Erreur: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
                 }
+            } else {
+                if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                    Toast.makeText(this, "Ce compte n'existe pas.", Toast.LENGTH_SHORT).show();
+                } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                    Toast.makeText(this, "Identifiant ou mot de passe incorrect(s). Réessayez", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Erreur: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                loginButton.setEnabled(true);
             }
         });
     }
@@ -172,16 +175,16 @@ public class LoginActivity extends AppCompatActivity {
     private void handleNewDevice(FirebaseUser user) {
         String userId = user.getUid();
         String deviceId = getSafeDeviceId(this);
+        String docId = userId + "::" + deviceId;
 
         Map<String, Object> deviceData = new HashMap<>();
+        deviceData.put("userId", userId);
         deviceData.put("deviceId", deviceId);
         deviceData.put("deviceName", Build.MANUFACTURER + " " + Build.MODEL);
         deviceData.put("lastActive", Timestamp.now());
 
-        db.collection("users")
-                .document(userId)
-                .collection("devices")
-                .document(deviceId)
+        db.collection("devices")
+                .document(docId)
                 .set(deviceData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     proceedToMainActivity();
@@ -211,6 +214,9 @@ public class LoginActivity extends AppCompatActivity {
      * Proceed to main activity after successful login
      */
     private void proceedToMainActivity() {
+        MyApp app = MyApp.getInstance();
+        app.setUserValid(true);
+
         Toast.makeText(this, "Connexion réussie", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();

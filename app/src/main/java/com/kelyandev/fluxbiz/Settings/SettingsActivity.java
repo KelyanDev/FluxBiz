@@ -20,6 +20,7 @@ import com.kelyandev.fluxbiz.Settings.Account.AccountSettingsFragment;
 import com.kelyandev.fluxbiz.Settings.Account.ChangeEmailFragment;
 import com.kelyandev.fluxbiz.Settings.Account.ChangeUsernameFragment;
 import com.kelyandev.fluxbiz.Settings.Security.ChangePasswordFragment;
+import com.kelyandev.fluxbiz.Settings.Security.ConnectedSessionsFragment;
 import com.kelyandev.fluxbiz.Settings.Security.SecuritySettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -136,6 +137,8 @@ public class SettingsActivity extends AppCompatActivity {
             return getString(R.string.change_password);
         } else if (currentFragment instanceof AccessibilitySettingsFragment) {
             return getString(R.string.accessibility);
+        } else if (currentFragment instanceof ConnectedSessionsFragment) {
+            return getString(R.string.active_sessions);
         } else {
             return getString(R.string.params);
         }

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -46,15 +47,17 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
 
     private List<Biz> bizList;
     private String currentUserId;
+    private Context context;
 
     /**
      * Constructor of BizAdapter
      * @param bizList list of Biz objects
      * @param currentUserId ID of the current user
      */
-    public BizAdapter(List<Biz> bizList, String currentUserId) {
+    public BizAdapter(List<Biz> bizList, String currentUserId, Context context) {
         this.bizList = bizList;
         this.currentUserId = currentUserId;
+        this.context = context;
     }
 
     /**
@@ -366,6 +369,7 @@ public class BizAdapter extends RecyclerView.Adapter<BizAdapter.BizViewHolder> {
                         .addOnSuccessListener(aVoid2 -> {
                             bizList.remove(biz);
                             updateData(bizList);
+                            Toast.makeText(context, "Biz supprimé avec succès!", Toast.LENGTH_SHORT).show();
                         }).addOnFailureListener(e -> Log.w("Biz deletion", "Error deleting biz from Database"));
                 }).addOnFailureListener(e -> Log.w("Biz Deletion", "Error deleting biz from Firestore", e));
     }

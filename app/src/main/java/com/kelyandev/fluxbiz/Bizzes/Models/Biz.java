@@ -230,20 +230,20 @@ public class Biz {
         long ageInMillis = currentTime - time;
 
         // Hyperparameters
-        double beta = 0.9; // Likes weight
-        double alpha = 1.2; // Rebizzes weight
-        double delta = 1.4; // Decreasing linked to age
-        double epsilon = 1e-6;
+        double beta = 0.3; // Likes weight
+        double alpha = 0.4; // Rebizzes weight
+        double delta = 1.5; // Decreasing linked to age
+        double epsilon = 1e-3;
 
         // Calculating likes and rebizzes contribution
-        double likesContribution = Math.pow(likes, beta);
-        double rebizzesContribution = Math.pow(rebizzes, alpha);
+        double likesContribution = Math.log1p(likes) * beta;
+        double rebizzesContribution = Math.log1p(rebizzes) * alpha;
 
         // Total popularity score
         double popularity = likesContribution + rebizzesContribution;
 
         // Calculating penalty (related to age)
-        double agePenalty = Math.pow(ageInMillis / 1000.0, delta) + epsilon;
+        double agePenalty = Math.exp(delta * (ageInMillis / (1000.0 * 60 * 60))) + epsilon;
 
         setScore(popularity/agePenalty);
     }

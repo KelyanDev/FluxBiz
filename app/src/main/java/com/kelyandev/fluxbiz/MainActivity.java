@@ -1,7 +1,5 @@
 package com.kelyandev.fluxbiz;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -21,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -53,7 +52,6 @@ import com.kelyandev.fluxbiz.Settings.SettingsActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity {
@@ -81,6 +79,13 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        initializeApp();
+    }
+
+    /**
+     * Initialize the app once the user has been verified
+     */
+    private void initializeApp() {
         // Managing Firebase remote config
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
@@ -95,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-
-        handleStart(mAuth, currentUser);
-
 
         // Recycler View
         recyclerView = findViewById(R.id.recyclerViewBiz);
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         bizList = new ArrayList<>();
 
-        bizAdapter = new BizAdapter(bizList, currentUser.getUid());
+        bizAdapter = new BizAdapter(bizList, currentUser.getUid(), this);
         recyclerView.setAdapter(bizAdapter);
 
         // Database connexion
@@ -172,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
     }
+
+
+    /* ===== Data loading from Firestore & Realtime Database ===== */
 
     /**
      * Function to force the recyclerView to refresh
@@ -378,6 +383,9 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
+
+    /* ===== Support related functions ===== */
+
     /**
      * Function to open the support page on my Github repo
      */
@@ -386,6 +394,9 @@ public class MainActivity extends AppCompatActivity {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(supportUrl));
         startActivity(browserIntent);
     }
+
+
+    /* ===== Remote Config loading - App version verification ===== */
 
     /**
      * Function to fetch the config from Firebase Remote Config
@@ -456,6 +467,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    /* ===== Login redirection function ===== */
+
     /**
      * Function to redirect the user to the Login Activity.
      */
@@ -465,60 +479,5 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    /**
-     * Gets the device ID from the preferences; Generates one if none exist
-     * @param context The context
-     * @return The device's Id
-     */
-    private String getSafeDeviceId(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
-        String deviceId = prefs.getString("device_id", null);
-        if (deviceId == null) {
-            deviceId = UUID.randomUUID().toString();
-            prefs.edit().putString("device_id", deviceId).apply();
-        }
-        return deviceId;
-    }
-
-    /**
-     * Function to handle the steps of the app start
-     */
-    private void handleStart(FirebaseAuth mAuth, FirebaseUser currentUser) {
-        String deviceId = getSafeDeviceId(this);
-
-        if (currentUser == null) {
-            redirectToLogin();
-        } else {
-            currentUser.reload().addOnCompleteListener(task -> {
-                FirebaseUser reloadedUser = mAuth.getCurrentUser();
-                if (reloadedUser == null) {
-                    mAuth.signOut();
-                    redirectToLogin();
-                }
-
-                Log.d("AppStartHandler", "Checking user's device: " + deviceId);
-
-                db.collection("users")
-                        .document(reloadedUser.getUid())
-                        .collection("devices")
-                        .document(deviceId)
-                        .get()
-                        .addOnSuccessListener(snapshot -> {
-                            if (!snapshot.exists()) {
-                                Log.d("AppStartHandler", "Device is not connected !");
-                                mAuth.signOut();
-                                redirectToLogin();
-                            } else {
-                                Log.d("AppStartHandler", "Device is connected !");
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.d("AppStartHandler", "Error while getting device: " + e.getMessage());
-                        });
-
-            });
-
-        }
-    }
 
 }
