@@ -160,7 +160,7 @@ See the [open issues](https://github.com/KelyanDev/FluxBiz/issues) for a full li
 <!-- CONTACT -->
 ## Contact
 
-My Portfolio - [Click here](https://kelyandev.github.io/)
+My Portfolio - [Click here](https://kelyandev.github.io/Portfolio)
 
 Project Link: [https://github.com/KelyanDev/FluxBiz](https://github.com/KelyanDev/FluxBiz)
 
